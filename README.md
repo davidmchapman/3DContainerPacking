@@ -30,6 +30,8 @@ The ContainerPackingResult contains the container ID, a list of items that were 
 
 This project also includes a demo web application that lets the user specify an arbitrary set of items and an arbitrary set of containers. AJAX packing requests are sent to the server and handled by a WebAPI controller. Once returned, each pack solution can be viewed in the WebGL visualization tool by clicking the camera icon. 
 
+![Container packing visualization](/images/packing1.gif?raw=true "Container Packing")
+
 ## Acknowledgements and Related Projects
 
 This project would not have been possible without the support of Dr. Raymond Hill at the Air Force Institute of Technology. It also leans heavily on the original C code included in Erhan Baltacıoğlu's thesis, which was discovered and ressurected by Bill Knechtel (GitHub user wknechtel), and ported to JavaScript by GitHub user keremdemirer:
