@@ -30,7 +30,7 @@ The ContainerPackingResult contains the container ID, a list of items that were 
 
 This project also includes a demo web application that lets the user specify an arbitrary set of items and an arbitrary set of containers. AJAX packing requests are sent to the server and handled by a WebAPI controller. Once returned, each pack solution can be viewed in the WebGL visualization tool by clicking the camera icon. 
 
-![Container packing visualization](https://github.com/davidmchapman/3DContainerPacking/images/packing1.gif?raw=true "Container Packing")
+![Container packing visualization](https://github.com/davidmchapman/3DContainerPacking/blob/master/images/packing-1.gif?raw=true "Container Packing")
 
 ## Acknowledgements and Related Projects
 
