@@ -8,7 +8,7 @@ The EB-AFIT algorithm supports full item rotation and has excellent runtime perf
 
 Include the ContainerPacking project in your solution. Create a new instance of the algorithm to use for packing (currently EB-AFIT only), either directly or by using one of the algorithm type IDs included in the AlgorithType enum:
 
-    AlgorithmBase algorithm = PackingService.GetPackingAlgorithmFromTypeID(1);
+    AlgorithmBase algorithm = PackingService.GetPackingAlgorithmFromTypeID((int)AlgorithmType.EB_AFIT);
 
 Create a Container object, which describes the dimensions of the container:
 
@@ -22,7 +22,7 @@ Create a list of items to pack:
 
 Call the Pack method on your container and item list:
 
-    ContainerPackingResult result = PackingService.Pack(container, request.ItemsToPack, algorithm);
+    ContainerPackingResult result = PackingService.Pack(container, itemsToPack, algorithm);
 
 The ContainerPackingResult contains the container ID, a list of items that were successfully packed, a list of items that could not be packed, and a few other packing metrics. The items in the packed list are in pack order and include x, y, and z coordinates and x, y, and z pack dimensions. This information is useful if you want to attach a visualization tool to display the packed items in their proper pack locations and orientations.
 
