@@ -10,7 +10,7 @@ namespace CromulentBisgetti.ContainerPacking.Algorithms
 	/// which itself was a JavaScript port of https://github.com/wknechtel/3d-bin-pack/, which is a C reconstruction 
 	/// of a novel algorithm developed in a U.S. Air Force master's thesis by Erhan Baltacioglu in 2001.
 	/// </summary>
-	public class EB_AFIT : AlgorithmBase
+	public class EB_AFIT : IPackingAlgorithm
 	{
 		#region Public Methods
 
@@ -20,7 +20,7 @@ namespace CromulentBisgetti.ContainerPacking.Algorithms
 		/// <param name="container">The container to pack items into.</param>
 		/// <param name="items">The items to pack.</param>
 		/// <returns>The bin packing result.</returns>
-		public override ContainerPackingResult Run(Container container, List<Item> items)
+		public ContainerPackingResult Run(Container container, List<Item> items)
 		{
 			this.container = container;
 

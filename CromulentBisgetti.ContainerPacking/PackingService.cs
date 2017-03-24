@@ -21,7 +21,7 @@ namespace CromulentBisgetti.ContainerPacking
 		/// <param name="itemsToPack">The items to pack.</param>
 		/// <param name="algorithm">The algorithm to use for packing.</param>
 		/// <returns>A container packing result with lists of the packed and unpacked items.</returns>
-		public static ContainerPackingResult Pack(Container container, List<Item> itemsToPack, AlgorithmBase algorithm)
+		public static ContainerPackingResult Pack(Container container, List<Item> itemsToPack, IPackingAlgorithm algorithm)
 		{
 			Stopwatch stopwatch = new Stopwatch();
 
@@ -50,7 +50,7 @@ namespace CromulentBisgetti.ContainerPacking
 		/// <param name="algorithmTypeID">The algorithm type ID.</param>
 		/// <returns>An instance of a packing algorithm implementing AlgorithmBase.</returns>
 		/// <exception cref="System.Exception">Invalid algorithm type.</exception>
-		public static AlgorithmBase GetPackingAlgorithmFromTypeID(int algorithmTypeID)
+		public static IPackingAlgorithm GetPackingAlgorithmFromTypeID(int algorithmTypeID)
 		{
 			switch (algorithmTypeID)
 			{

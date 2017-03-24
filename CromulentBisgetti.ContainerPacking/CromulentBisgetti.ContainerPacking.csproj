@@ -53,7 +53,7 @@
     <Compile Include="Entities\Container.cs" />
     <Compile Include="Entities\ContainerPackingResult.cs" />
     <Compile Include="Entities\Item.cs" />
-    <Compile Include="Algorithms\AlgorithmBase.cs" />
+    <Compile Include="Algorithms\IPackingAlgorithm.cs" />
     <Compile Include="Algorithms\EB_AFIT.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
