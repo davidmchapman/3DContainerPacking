@@ -23,13 +23,7 @@ namespace CromulentBisgetti.DemoApp.Controllers
 		public ContainerPackingResult Post([FromBody]ContainerPackingRequest request)
 		{
 			Container container = new Container(request.ContainerID, request.ContainerLength, request.ContainerWidth, request.ContainerHeight);
-<<<<<<< HEAD
 			return PackingService.Pack(container, request.ItemsToPack, request.AlgorithmTypeIDs);
-=======
-			AlgorithmBase algorithm = PackingService.GetPackingAlgorithmFromTypeID(1);
-			
-			return PackingService.Pack(container, request.ItemsToPack, algorithm);
->>>>>>> parent of 684e6aa... Changed AlgorithmBase to IPackingAlgorithm.
 		}
 	}
 }

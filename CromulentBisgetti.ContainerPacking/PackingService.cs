@@ -21,11 +21,7 @@ namespace CromulentBisgetti.ContainerPacking
 		/// <param name="itemsToPack">The items to pack.</param>
 		/// <param name="algorithm">The algorithm to use for packing.</param>
 		/// <returns>A container packing result with lists of the packed and unpacked items.</returns>
-<<<<<<< HEAD
 		public static ContainerPackingResult Pack(Container container, List<Item> itemsToPack, List<int> algorithmTypeIDs)
-=======
-		public static ContainerPackingResult Pack(Container container, List<Item> itemsToPack, AlgorithmBase algorithm)
->>>>>>> parent of 684e6aa... Changed AlgorithmBase to IPackingAlgorithm.
 		{
 			Object sync = new Object { };
 			ContainerPackingResult result = new ContainerPackingResult();
@@ -77,7 +73,7 @@ namespace CromulentBisgetti.ContainerPacking
 		/// <param name="algorithmTypeID">The algorithm type ID.</param>
 		/// <returns>An instance of a packing algorithm implementing AlgorithmBase.</returns>
 		/// <exception cref="System.Exception">Invalid algorithm type.</exception>
-		public static AlgorithmBase GetPackingAlgorithmFromTypeID(int algorithmTypeID)
+		public static IPackingAlgorithm GetPackingAlgorithmFromTypeID(int algorithmTypeID)
 		{
 			switch (algorithmTypeID)
 			{
