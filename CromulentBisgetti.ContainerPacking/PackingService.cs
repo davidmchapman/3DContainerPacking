@@ -21,26 +21,49 @@ namespace CromulentBisgetti.ContainerPacking
 		/// <param name="itemsToPack">The items to pack.</param>
 		/// <param name="algorithm">The algorithm to use for packing.</param>
 		/// <returns>A container packing result with lists of the packed and unpacked items.</returns>
-		public static ContainerPackingResult Pack(Container container, List<Item> itemsToPack, IPackingAlgorithm algorithm)
+		public static ContainerPackingResult Pack(Container container, List<Item> itemsToPack, List<int> algorithmTypeIDs)
 		{
-			Stopwatch stopwatch = new Stopwatch();
+			Object sync = new Object { };
+			ContainerPackingResult result = new ContainerPackingResult();
+			result.ContainerID = container.ID;
 
-			stopwatch.Start();
-			ContainerPackingResult result = algorithm.Run(container, itemsToPack);
-			stopwatch.Stop();
-
-			result.PackTimeInMilliseconds = stopwatch.ElapsedMilliseconds;
-
-			decimal containerVolume = container.Length * container.Width * container.Height;
-			decimal volumePacked = 0;
-
-			result.PackedItems.ForEach(item =>
+			Parallel.ForEach(algorithmTypeIDs, algorithmTypeID =>
 			{
-				volumePacked += item.Volume;
+				IPackingAlgorithm algorithm = PackingService.GetPackingAlgorithmFromTypeID(algorithmTypeID);
+
+				// Until I rewrite the algorithm with no side effects, we need to clone the item list
+				// so the parallel updates don't interfere with each other.
+				List<Item> items = new List<Item>();
+
+				itemsToPack.ForEach(item =>
+				{
+					items.Add(new Item(item.ID, item.Dim1, item.Dim2, item.Dim3, item.Quantity));
+				});
+
+				Stopwatch stopwatch = new Stopwatch();
+				stopwatch.Start();
+				AlgorithmPackingResult algorithmResult = algorithm.Run(container, items);
+				stopwatch.Stop();
+
+				algorithmResult.PackTimeInMilliseconds = stopwatch.ElapsedMilliseconds;
+
+				decimal containerVolume = container.Length * container.Width * container.Height;
+				decimal volumePacked = 0;
+
+				algorithmResult.PackedItems.ForEach(item =>
+				{
+					volumePacked += item.Volume;
+				});
+
+				algorithmResult.PercentContainerVolumePacked = (int)Math.Ceiling(volumePacked / containerVolume * 100);
+
+				lock (sync)
+				{
+					result.AlgorithmPackingResults.Add(algorithmResult);
+				}
 			});
 
-			result.PercentContainerVolumePacked = (int)Math.Ceiling(volumePacked / containerVolume * 100);
-
+			result.AlgorithmPackingResults = result.AlgorithmPackingResults.OrderBy(r => r.AlgorithmName).ToList();
 			return result;
 		}
 

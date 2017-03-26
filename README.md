@@ -6,9 +6,7 @@ The EB-AFIT algorithm supports full item rotation and has excellent runtime perf
 
 ## Usage
 
-Include the ContainerPacking project in your solution. Create a new instance of the algorithm to use for packing (currently EB-AFIT only), either directly or by using one of the algorithm type IDs included in the AlgorithType enum:
-
-    IPackingAlgorithm algorithm = PackingService.GetPackingAlgorithmFromTypeID((int)AlgorithmType.EB_AFIT);
+Start by including the ContainerPacking project in your solution.
 
 Create a Container object, which describes the dimensions of the container:
 
@@ -20,15 +18,19 @@ Create a list of items to pack:
     itemsToPack.Add(new Item(id, dim1, dim2, dim3, quantity));
     ...
 
-Call the Pack method on your container and item list:
+Create a list of algorithm IDs corresponding to the algorithms you would like to use. (Currently EB-AFIT is the only algorithm implemented.) Algorithm IDs are in the AlgorithmType enum.
 
-    ContainerPackingResult result = PackingService.Pack(container, itemsToPack, algorithm);
+    List<int> algorithms = new List<int>() { (int)AlgorithmType.EB_AFIT };
 
-The ContainerPackingResult contains the container ID, a list of items that were successfully packed, a list of items that could not be packed, and a few other packing metrics. The items in the packed list are in pack order and include x, y, and z coordinates and x, y, and z pack dimensions. This information is useful if you want to attach a visualization tool to display the packed items in their proper pack locations and orientations.
+Call the Pack method on your container, item list, and algorithm list:
+
+    ContainerPackingResult result = PackingService.Pack(container, itemsToPack, algorithms);
+
+The ContainerPackingResult contains the container ID and a list of AlgorithmPackingResult objects, one for each algorithm requested. Within each algorithm packing result is the name and ID of the algorithm used, a list of items that were successfully packed, a list of items that could not be packed, and a few other packing metrics. The items in the packed list are in pack order and include x, y, and z coordinates and x, y, and z pack dimensions. This information is useful if you want to attach a visualization tool to display the packed items in their proper pack locations and orientations.
 
 ## Demo WebAPI Application
 
-This project also includes a demo web application that lets the user specify an arbitrary set of items and an arbitrary set of containers. AJAX packing requests are sent to the server and handled by a WebAPI controller. Once returned, each pack solution can be viewed in the WebGL visualization tool by clicking the camera icon. 
+This project also includes a demo web application that lets the user specify an arbitrary set of items, an arbitrary set of containers, and the packing algorithms to use. AJAX packing requests are sent to the server and handled by a WebAPI controller. Once returned, each pack solution can be viewed in the WebGL visualization tool by clicking the camera icon. 
 
 ![Container packing visualization](https://github.com/davidmchapman/3DContainerPacking/blob/master/images/packing-1.gif?raw=true "Container Packing")
 

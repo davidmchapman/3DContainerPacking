@@ -11,10 +11,14 @@
 			width: 100%;
 			height: 100%;
 		}
-		
-		table.borderless td, table.borderless th {
-			border: none !important;
+
+		table {
+			font-size: 14px;
 		}
+
+			table.borderless td, table.borderless th {
+				border: none !important;
+			}
 
 		.button-column {
 			width: 60px;
@@ -26,6 +30,10 @@
 
 		.data-column {
 			width: 80px;
+		}
+
+		.algorithm-name-column {
+			width: 180px;
 		}
 
 		.gray-cell {
@@ -43,7 +51,47 @@
 </head>
 <body style="margin-bottom: 100px;">
 	<div id="content" class="container">
-		<h3>Container Packing with EB-AFIT</h3>
+		<h3>3D Container Packing</h3>
+		<div class="row">
+			<div class="col-xs-4">
+				<div class="panel panel-default">
+					<div class="panel-heading">
+						<h3 class="panel-title">Packing Algorithms</h3>
+					</div>
+					<div class="panel-body">
+						<table class="table table-condensed" style="font-size: 14px;">
+							<thead>
+								<tr>
+									<th class="button-column"></th>
+									<th class="algorithm-name-column">Algorithms to Use</th>
+									<th></th>
+								</tr>
+							</thead>
+							<tbody data-bind="foreach: AlgorithmsToUse">
+								<tr>
+									<td class="button-column"><button class="btn btn-danger btn-sm" data-bind="click: $root.RemoveAlgorithmToUse">&nbsp;<span class="glyphicon glyphicon-remove"></span>&nbsp;</button></td>
+									<td class="algorithm-name-column"><p class="form-control-static" data-bind="text: AlgorithmName"></p></td>
+									<td></td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+					<div class="panel-footer">
+						<table class="table table-condensed borderless" style="font-size: 14px;">
+							<tr>
+								<td class="button-column"><button class="btn btn-success btn-sm" data-bind="click: AddAlgorithmToUse">&nbsp;<span class="glyphicon glyphicon-plus"></span>&nbsp;</button></td>
+								<td class="algorithm-name-column">
+									<select id="algorithm-select" class="form-control">
+										<option value="1">EB-AFIT</option>
+									</select>
+								</td>
+								<td></td>
+							</tr>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
 		<div class="row">
 			<div class="col-xs-7">
 				<div class="panel panel-default">
@@ -115,6 +163,7 @@
 									<th class="data-column text-center">W</th>
 									<th class="data-column text-center">H</th>
 									<th class="button-column gray-cell"></th>
+									<th class="algorithm-name-column">Algorithm<br />Name</th>
 									<th class="data-column text-center">Pack Time<br />(ms)</th>
 									<th class="data-column text-center"><div data-toggle="tooltip" title="% of container volume packed with items">% Cont.<br />Used</div></th>
 									<th class="data-column text-center"># Items<br />Packed</th>
@@ -130,11 +179,48 @@
 									<td class="data-column text-center"><input type="text" class="form-control input-sm text-center" data-bind="value: Width" /></td>
 									<td class="data-column text-center"><input type="text" class="form-control input-sm text-center" data-bind="value: Height" /></td>
 									<td class="button-column gray-cell"></td>
-									<td class="data-column text-center"><p class="form-control-static" data-bind="text: PackTimeInMilliseconds"></p></td>
-									<td class="data-column text-center"><p class="form-control-static" data-bind="text: PercentContainerVolumePacked"></p></td>
-									<td class="data-column text-center" data-bind="css: UnpackedItems().length == 0 && PackedItems().length != 0 ? 'bg-success' : ''"><p class="form-control-static" data-bind="text: PackedItems().length"></p></td>
-									<td class="data-column text-center" data-bind="css: UnpackedItems().length == 0 && PackedItems().length != 0 ? 'bg-success' : ''"><p class="form-control-static" data-bind="text: UnpackedItems().length"></p></td>
-									<td class="text-right"><button class="btn btn-info btn-sm" data-toggle="modal" data-target=".render-modal" data-bind="enable: !isNaN(PackTimeInMilliseconds()), click: $root.ShowPackingView">&nbsp;<span class="glyphicon glyphicon-camera"></span>&nbsp;</button></td>
+									<td class="algorithm-name-column">
+										<table>
+											<tbody data-bind="foreach: AlgorithmPackingResults">
+												<tr><td><p class="form-control-static" data-bind="text: AlgorithmName"></p></td></tr>
+											</tbody>
+										</table>
+									</td>
+									<td class="data-column text-center">
+										<table style="margin: auto;">
+											<tbody data-bind="foreach: AlgorithmPackingResults">
+												<tr><td><p class="form-control-static" data-bind="text: PackTimeInMilliseconds"></p></td></tr>
+											</tbody>
+										</table>
+									</td>
+									<td class="data-column text-center">
+										<table style="margin: auto;">
+											<tbody data-bind="foreach: AlgorithmPackingResults">
+												<tr><td><p class="form-control-static" data-bind="text: PercentContainerVolumePacked"></p></td></tr>
+											</tbody>
+										</table>
+									</td>
+									<td class="data-column">
+										<table style="width: 100%">
+											<tbody data-bind="foreach: AlgorithmPackingResults">
+												<tr class="text-center"><td data-bind="css: UnpackedItems.length == 0 && PackedItems.length != 0 ? 'bg-success' : ''"><p class="form-control-static" data-bind="text: PackedItems.length"></p></td></tr>
+											</tbody>
+										</table>
+									</td>
+									<td class="data-column">
+										<table style="width: 100%">
+											<tbody data-bind="foreach: AlgorithmPackingResults">
+												<tr class="text-center"><td data-bind="css: UnpackedItems.length == 0 && PackedItems.length != 0 ? 'bg-success' : ''"><p class="form-control-static" data-bind="text: UnpackedItems.length"></p></td></tr>
+											</tbody>
+										</table>
+									</td>
+									<td class="data-column text-right">
+										<table style="margin-left: auto;">
+											<tbody data-bind="foreach: AlgorithmPackingResults">
+												<tr><td><button class="btn btn-link" data-toggle="modal" data-target=".render-modal" data-bind="click: $root.ShowPackingView.bind($parent)">&nbsp;<span class="glyphicon glyphicon-camera"></span>&nbsp;</button></td></tr>
+											</tbody>
+										</table>
+									</td>
 								</tr>
 							</tbody>
 						</table>
@@ -159,7 +245,7 @@
 	<div class="modal fade render-modal" tabindex="-1" role="dialog">
 		<div class="modal-dialog modal-lg" role="document">
 			<div class="modal-content" style="margin-bottom: 30px;">
-				<div id="drawing-container"style="margin-top: 30px; text-align: center;"></div>
+				<div id="drawing-container" style="margin-top: 30px; text-align: center;"></div>
 				<div class="text-center">
 					<button class="btn btn-default" data-bind="click: UnpackItemInRender, enable: AreItemsPacked()"><span class="glyphicon glyphicon-chevron-left"></span></button>
 					<button class="btn btn-default" data-bind="click: PackItemInRender, disable: AreAllItemsPacked()"><span class="glyphicon glyphicon-chevron-right"></span></button>

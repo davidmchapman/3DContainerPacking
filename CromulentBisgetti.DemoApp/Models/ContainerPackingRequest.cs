@@ -14,5 +14,7 @@ namespace CromulentBisgetti.DemoApp.Models
 		public decimal ContainerHeight { get; set; }
 
 		public List<Item> ItemsToPack { get; set; }
+
+		public List<int> AlgorithmTypeIDs { get; set; }
 	}
 }

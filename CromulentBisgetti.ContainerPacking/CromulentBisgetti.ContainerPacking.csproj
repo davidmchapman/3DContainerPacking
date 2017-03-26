@@ -49,6 +49,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Algorithms\AlgorithmType.cs" />
+    <Compile Include="Entities\AlgorithmPackingResult.cs" />
     <Compile Include="PackingService.cs" />
     <Compile Include="Entities\Container.cs" />
     <Compile Include="Entities\ContainerPackingResult.cs" />

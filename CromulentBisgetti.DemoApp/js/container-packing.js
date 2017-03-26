@@ -74,6 +74,7 @@ var ViewModel = function () {
 		z: 0
 	};
 
+	self.AlgorithmsToUse = ko.observableArray([]);
 	self.ItemsToPack = ko.observableArray([]);
 	self.Containers = ko.observableArray([]);
 
@@ -92,19 +93,29 @@ var ViewModel = function () {
 	
 	self.GenerateContainers = function () {
 		self.Containers([]);
-		self.Containers.push(ko.mapping.fromJS({ ID: 1000, Name: 'Box1', Length: 15, Width: 13, Height: 9, PackTimeInMilliseconds: '--', PercentContainerVolumePacked: '--', PackedItems: [], UnpackedItems: [] }));
-		self.Containers.push(ko.mapping.fromJS({ ID: 1001, Name: 'Box2', Length: 23, Width: 9, Height: 4, PackTimeInMilliseconds: '--', PercentContainerVolumePacked: '--', PackedItems: [], UnpackedItems: [] }));
-		self.Containers.push(ko.mapping.fromJS({ ID: 1002, Name: 'Box3', Length: 16, Width: 16, Height: 6, PackTimeInMilliseconds: '--', PercentContainerVolumePacked: '--', PackedItems: [], UnpackedItems: [] }));
-		self.Containers.push(ko.mapping.fromJS({ ID: 1003, Name: 'Box4', Length: 10, Width: 8, Height: 5, PackTimeInMilliseconds: '--', PercentContainerVolumePacked: '--', PackedItems: [], UnpackedItems: [] }));
-		self.Containers.push(ko.mapping.fromJS({ ID: 1004, Name: 'Box5', Length: 40, Width: 28, Height: 20, PackTimeInMilliseconds: '--', PercentContainerVolumePacked: '--', PackedItems: [], UnpackedItems: [] }));
-		self.Containers.push(ko.mapping.fromJS({ ID: 1005, Name: 'Box6', Length: 29, Width: 19, Height: 4, PackTimeInMilliseconds: '--', PercentContainerVolumePacked: '--', PackedItems: [], UnpackedItems: [] }));
-		self.Containers.push(ko.mapping.fromJS({ ID: 1006, Name: 'Box7', Length: 18, Width: 13, Height: 1, PackTimeInMilliseconds: '--', PercentContainerVolumePacked: '--', PackedItems: [], UnpackedItems: [] }));
-		self.Containers.push(ko.mapping.fromJS({ ID: 1007, Name: 'Box8', Length: 6, Width: 6, Height: 6, PackTimeInMilliseconds: '--', PercentContainerVolumePacked: '--', PackedItems: [], UnpackedItems: [] }));
-		self.Containers.push(ko.mapping.fromJS({ ID: 1008, Name: 'Box9', Length: 8, Width: 5, Height: 5, PackTimeInMilliseconds: '--', PercentContainerVolumePacked: '--', PackedItems: [], UnpackedItems: [] }));
-		self.Containers.push(ko.mapping.fromJS({ ID: 1009, Name: 'Box10', Length: 18, Width: 13, Height: 8, PackTimeInMilliseconds: '--', PercentContainerVolumePacked: '--', PackedItems: [], UnpackedItems: [] }));
-		self.Containers.push(ko.mapping.fromJS({ ID: 1010, Name: 'Box11', Length: 17, Width: 16, Height: 15, PackTimeInMilliseconds: '--', PercentContainerVolumePacked: '--', PackedItems: [], UnpackedItems: [] }));
-		self.Containers.push(ko.mapping.fromJS({ ID: 1011, Name: 'Box12', Length: 32, Width: 10, Height: 9, PackTimeInMilliseconds: '--', PercentContainerVolumePacked: '--', PackedItems: [], UnpackedItems: [] }));
-		self.Containers.push(ko.mapping.fromJS({ ID: 1012, Name: 'Box13', Length: 60, Width: 60, Height: 60, PackTimeInMilliseconds: '--', PercentContainerVolumePacked: '--', PackedItems: [], UnpackedItems: [] }));
+		self.Containers.push(ko.mapping.fromJS({ ID: 1000, Name: 'Box1', Length: 15, Width: 13, Height: 9, AlgorithmPackingResults: [] }));
+		self.Containers.push(ko.mapping.fromJS({ ID: 1001, Name: 'Box2', Length: 23, Width: 9, Height: 4, AlgorithmPackingResults: [] }));
+		self.Containers.push(ko.mapping.fromJS({ ID: 1002, Name: 'Box3', Length: 16, Width: 16, Height: 6, AlgorithmPackingResults: [] }));
+		self.Containers.push(ko.mapping.fromJS({ ID: 1003, Name: 'Box4', Length: 10, Width: 8, Height: 5, AlgorithmPackingResults: [] }));
+		self.Containers.push(ko.mapping.fromJS({ ID: 1004, Name: 'Box5', Length: 40, Width: 28, Height: 20, AlgorithmPackingResults: [] }));
+		self.Containers.push(ko.mapping.fromJS({ ID: 1005, Name: 'Box6', Length: 29, Width: 19, Height: 4, AlgorithmPackingResults: [] }));
+		self.Containers.push(ko.mapping.fromJS({ ID: 1006, Name: 'Box7', Length: 18, Width: 13, Height: 1, AlgorithmPackingResults: [] }));
+		self.Containers.push(ko.mapping.fromJS({ ID: 1007, Name: 'Box8', Length: 6, Width: 6, Height: 6, AlgorithmPackingResults: [] }));
+		self.Containers.push(ko.mapping.fromJS({ ID: 1008, Name: 'Box9', Length: 8, Width: 5, Height: 5, AlgorithmPackingResults: [] }));
+		self.Containers.push(ko.mapping.fromJS({ ID: 1009, Name: 'Box10', Length: 18, Width: 13, Height: 8, AlgorithmPackingResults: [] }));
+		self.Containers.push(ko.mapping.fromJS({ ID: 1010, Name: 'Box11', Length: 17, Width: 16, Height: 15, AlgorithmPackingResults: [] }));
+		self.Containers.push(ko.mapping.fromJS({ ID: 1011, Name: 'Box12', Length: 32, Width: 10, Height: 9, AlgorithmPackingResults: [] }));
+		self.Containers.push(ko.mapping.fromJS({ ID: 1012, Name: 'Box13', Length: 60, Width: 60, Height: 60, AlgorithmPackingResults: [] }));
+	};
+
+	self.AddAlgorithmToUse = function () {
+		var algorithmID = $('#algorithm-select option:selected').val();
+		var algorithmName = $('#algorithm-select option:selected').text();
+		self.AlgorithmsToUse.push({ AlgorithmID: algorithmID, AlgorithmName: algorithmName });
+	};
+
+	self.RemoveAlgorithmToUse = function (item) {
+		self.AlgorithmsToUse.remove(item);
 	};
 
 	self.AddNewItemToPack = function () {
@@ -135,6 +146,12 @@ var ViewModel = function () {
 	};
 
 	self.PackContainers = function () {
+		var algorithmsToUse = [];
+
+		self.AlgorithmsToUse().forEach(algorithm => {
+			algorithmsToUse.push(algorithm.AlgorithmID);
+		});
+		
 		var itemsToPack = [];
 
 		self.ItemsToPack().forEach(item => {
@@ -157,7 +174,8 @@ var ViewModel = function () {
 				ContainerLength: container.Length(),
 				ContainerWidth: container.Width(),
 				ContainerHeight: container.Height(),
-				ItemsToPack: itemsToPack
+				ItemsToPack: itemsToPack,
+				AlgorithmTypeIDs: algorithmsToUse
 			};
 			
 			PackContainer(JSON.stringify(request))
@@ -165,18 +183,15 @@ var ViewModel = function () {
 					// Tie this response back to the correct container.
 					self.Containers().forEach(container => {
 						if (container.ID() == response.ContainerID) {
-							container.PackedItems(response.PackedItems);
-							container.UnpackedItems(response.UnpackedItems);
-							container.PackTimeInMilliseconds(response.PackTimeInMilliseconds);
-							container.PercentContainerVolumePacked(response.PercentContainerVolumePacked);
+							container.AlgorithmPackingResults(response.AlgorithmPackingResults);
 						}
 					});
 				});
 		});
-		
 	};
 	
-	self.ShowPackingView = function (container) {
+	self.ShowPackingView = function (algorithmPackingResult) {
+		var container = this;
 		var selectedObject = scene.getObjectByName('container');
 		scene.remove( selectedObject );
 		
@@ -187,7 +202,7 @@ var ViewModel = function () {
 		
 		camera.position.set(container.Length(), container.Length(), container.Length());
 
-		self.ItemsToRender(ko.mapping.toJS(container.PackedItems()));
+		self.ItemsToRender(algorithmPackingResult.PackedItems);
 		self.LastItemRenderedIndex(-1);
 
 		self.ContainerOriginOffset.x = -1 * container.Length() / 2;
@@ -259,10 +274,7 @@ var Container = function () {
 	this.Length = '';
 	this.Width = '';
 	this.Height = '';
-	this.PackTimeInMilliseconds = '--',
-	this.PercentContainerVolumePacked = '--',
-	this.PackedItems = [],
-	this.UnpackedItems = []
+	this.AlgorithmPackingResults = [];
 }
 
 $(document).ready(() => {

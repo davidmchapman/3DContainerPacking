@@ -20,7 +20,7 @@ namespace CromulentBisgetti.ContainerPacking.Algorithms
 		/// <param name="container">The container to pack items into.</param>
 		/// <param name="items">The items to pack.</param>
 		/// <returns>The bin packing result.</returns>
-		public ContainerPackingResult Run(Container container, List<Item> items)
+		public AlgorithmPackingResult Run(Container container, List<Item> items)
 		{
 			this.container = container;
 
@@ -28,8 +28,9 @@ namespace CromulentBisgetti.ContainerPacking.Algorithms
 			ExecuteIterations();
 			Report();
 
-			ContainerPackingResult result = new ContainerPackingResult();
-			result.ContainerID = container.ID;
+			AlgorithmPackingResult result = new AlgorithmPackingResult();
+			result.AlgorithmID = (int)AlgorithmType.EB_AFIT;
+			result.AlgorithmName = "EB-AFIT";
 
 			for (int i = 1; i <= itemsToPackCount; i++)
 			{
