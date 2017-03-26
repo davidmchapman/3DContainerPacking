@@ -6,7 +6,13 @@ The EB-AFIT algorithm supports full item rotation and has excellent runtime perf
 
 ## Usage
 
+<<<<<<< HEAD
 Start by including the ContainerPacking project in your solution.
+=======
+Include the ContainerPacking project in your solution. Create a new instance of the algorithm to use for packing (currently EB-AFIT only), either directly or by using one of the algorithm type IDs included in the AlgorithType enum:
+
+    AlgorithmBase algorithm = PackingService.GetPackingAlgorithmFromTypeID((int)AlgorithmType.EB_AFIT);
+>>>>>>> parent of 684e6aa... Changed AlgorithmBase to IPackingAlgorithm.
 
 Create a Container object, which describes the dimensions of the container:
 
