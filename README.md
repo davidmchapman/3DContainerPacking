@@ -8,9 +8,11 @@ The EB-AFIT algorithm supports full item rotation and has excellent runtime perf
 
 Start by including the ContainerPacking project in your solution.
 
-Create a Container object, which describes the dimensions of the container:
+Create a list of Container objects, which describes the dimensions of the containers:
 
-    Container container = new Container(id, length, width, height);
+    List<Container> containers = new List<Container>();
+    containers.Add(new Container(id, length, width, height));
+    ...
 
 Create a list of items to pack:
 
@@ -18,15 +20,19 @@ Create a list of items to pack:
     itemsToPack.Add(new Item(id, dim1, dim2, dim3, quantity));
     ...
 
-Create a list of algorithm IDs corresponding to the algorithms you would like to use. (Currently EB-AFIT is the only algorithm implemented.) Algorithm IDs are in the AlgorithmType enum.
+Create a list of algorithm IDs corresponding to the algorithms you would like to use. (Currently EB-AFIT is the only algorithm implemented.) Algorithm IDs are listed in the AlgorithmType enum.
 
-    List<int> algorithms = new List<int>() { (int)AlgorithmType.EB_AFIT };
+    List<int> algorithms = new List<int>();
+    algorithms.Add((int)AlgorithmType.EB_AFIT);
+    ...
 
-Call the Pack method on your container, item list, and algorithm list:
+Call the Pack method on your container list, item list, and algorithm list:
 
-    ContainerPackingResult result = PackingService.Pack(container, itemsToPack, algorithms);
+    List<ContainerPackingResult> result = PackingService.Pack(containers, itemsToPack, algorithms);
 
-The ContainerPackingResult contains the container ID and a list of AlgorithmPackingResult objects, one for each algorithm requested. Within each algorithm packing result is the name and ID of the algorithm used, a list of items that were successfully packed, a list of items that could not be packed, and a few other packing metrics. The items in the packed list are in pack order and include x, y, and z coordinates and x, y, and z pack dimensions. This information is useful if you want to attach a visualization tool to display the packed items in their proper pack locations and orientations.
+The list of ContainerPackingResults contains a ContainerPackingResult object for each container. Within each ContainerPackingResult is the container ID and a list of AlgorithmPackingResult objects, one for each algorithm requested. Within each algorithm packing result is the name and ID of the algorithm used, a list of items that were successfully packed, a list of items that could not be packed, and a few other packing metrics. The items in the packed list are in pack order and include x, y, and z coordinates and x, y, and z pack dimensions. This information is useful if you want to attach a visualization tool to display the packed items in their proper pack locations and orientations.
+
+Internally, the Pack() method will try to pack all the containers with all the items using all the requested algorithms in parallel. If you have a list of containers you want to try, but want them to run serially, then you can call Pack() with one container at a time. For example, if you want to run a large set of containers but would like to update the user interface as each one finishes, then you would want to call Pack() multiple times asynchronously and update the UI as each result returns.
 
 ## Demo WebAPI Application
 

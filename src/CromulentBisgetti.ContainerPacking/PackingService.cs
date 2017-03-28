@@ -15,55 +15,66 @@ namespace CromulentBisgetti.ContainerPacking
 	public static class PackingService
 	{
 		/// <summary>
-		/// Attempts to pack the container with the specified items.
+		/// Attempts to pack the specified containers with the specified items using the specified algorithms.
 		/// </summary>
-		/// <param name="container">The container to pack.</param>
+		/// <param name="containers">The list of containers to pack.</param>
 		/// <param name="itemsToPack">The items to pack.</param>
-		/// <param name="algorithm">The algorithm to use for packing.</param>
+		/// <param name="algorithmTypeIDs">The list of algorithm type IDs to use for packing.</param>
 		/// <returns>A container packing result with lists of the packed and unpacked items.</returns>
-		public static ContainerPackingResult Pack(Container container, List<Item> itemsToPack, List<int> algorithmTypeIDs)
+		public static List<ContainerPackingResult> Pack(List<Container> containers, List<Item> itemsToPack, List<int> algorithmTypeIDs)
 		{
 			Object sync = new Object { };
-			ContainerPackingResult result = new ContainerPackingResult();
-			result.ContainerID = container.ID;
+			List<ContainerPackingResult> result = new List<ContainerPackingResult>();
 
-			Parallel.ForEach(algorithmTypeIDs, algorithmTypeID =>
+			Parallel.ForEach(containers, container =>
 			{
-				IPackingAlgorithm algorithm = PackingService.GetPackingAlgorithmFromTypeID(algorithmTypeID);
+				ContainerPackingResult containerPackingResult = new ContainerPackingResult();
+				containerPackingResult.ContainerID = container.ID;
 
-				// Until I rewrite the algorithm with no side effects, we need to clone the item list
-				// so the parallel updates don't interfere with each other.
-				List<Item> items = new List<Item>();
-
-				itemsToPack.ForEach(item =>
+				Parallel.ForEach(algorithmTypeIDs, algorithmTypeID =>
 				{
-					items.Add(new Item(item.ID, item.Dim1, item.Dim2, item.Dim3, item.Quantity));
+					IPackingAlgorithm algorithm = PackingService.GetPackingAlgorithmFromTypeID(algorithmTypeID);
+
+					// Until I rewrite the algorithm with no side effects, we need to clone the item list
+					// so the parallel updates don't interfere with each other.
+					List<Item> items = new List<Item>();
+
+					itemsToPack.ForEach(item =>
+					{
+						items.Add(new Item(item.ID, item.Dim1, item.Dim2, item.Dim3, item.Quantity));
+					});
+
+					Stopwatch stopwatch = new Stopwatch();
+					stopwatch.Start();
+					AlgorithmPackingResult algorithmResult = algorithm.Run(container, items);
+					stopwatch.Stop();
+
+					algorithmResult.PackTimeInMilliseconds = stopwatch.ElapsedMilliseconds;
+
+					decimal containerVolume = container.Length * container.Width * container.Height;
+					decimal volumePacked = 0;
+
+					algorithmResult.PackedItems.ForEach(item =>
+					{
+						volumePacked += item.Volume;
+					});
+
+					algorithmResult.PercentContainerVolumePacked = (int)Math.Ceiling(volumePacked / containerVolume * 100);
+
+					lock (sync)
+					{
+						containerPackingResult.AlgorithmPackingResults.Add(algorithmResult);
+					}
 				});
 
-				Stopwatch stopwatch = new Stopwatch();
-				stopwatch.Start();
-				AlgorithmPackingResult algorithmResult = algorithm.Run(container, items);
-				stopwatch.Stop();
-
-				algorithmResult.PackTimeInMilliseconds = stopwatch.ElapsedMilliseconds;
-
-				decimal containerVolume = container.Length * container.Width * container.Height;
-				decimal volumePacked = 0;
-
-				algorithmResult.PackedItems.ForEach(item =>
-				{
-					volumePacked += item.Volume;
-				});
-
-				algorithmResult.PercentContainerVolumePacked = (int)Math.Ceiling(volumePacked / containerVolume * 100);
+				containerPackingResult.AlgorithmPackingResults = containerPackingResult.AlgorithmPackingResults.OrderBy(r => r.AlgorithmName).ToList();
 
 				lock (sync)
 				{
-					result.AlgorithmPackingResults.Add(algorithmResult);
+					result.Add(containerPackingResult);
 				}
 			});
-
-			result.AlgorithmPackingResults = result.AlgorithmPackingResults.OrderBy(r => r.AlgorithmName).ToList();
+			
 			return result;
 		}
 

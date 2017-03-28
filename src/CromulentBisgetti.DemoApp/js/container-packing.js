@@ -5,7 +5,7 @@ var controls;
 var viewModel;
 var itemMaterial;
 
-async function PackContainer(request) {
+async function PackContainers(request) {
 	return $.ajax({
 		url: 'http://localhost:59023/api/containerpacking',
 		type: 'POST',
@@ -166,28 +166,38 @@ var ViewModel = function () {
 			itemsToPack.push(itemToPack);
 		});
 		
+		var containers = [];
+
 		// Send a packing request for each container in the list.
 		self.Containers().forEach(container => {
-			// Build container packing request.
-			var request = {
-				ContainerID: container.ID(),
-				ContainerLength: container.Length(),
-				ContainerWidth: container.Width(),
-				ContainerHeight: container.Height(),
-				ItemsToPack: itemsToPack,
-				AlgorithmTypeIDs: algorithmsToUse
+			var containerToUse = {
+				ID: container.ID(),
+				Length: container.Length(),
+				Width: container.Width(),
+				Height: container.Height()
 			};
-			
-			PackContainer(JSON.stringify(request))
-				.then(response => {
-					// Tie this response back to the correct container.
+
+			containers.push(containerToUse);
+		});
+		
+		// Build container packing request.
+		var request = {
+			Containers: containers,
+			ItemsToPack: itemsToPack,
+			AlgorithmTypeIDs: algorithmsToUse
+		};
+		
+		PackContainers(JSON.stringify(request))
+			.then(response => {
+				// Tie this response back to the correct containers.
+				response.forEach(containerPackingResult => {
 					self.Containers().forEach(container => {
-						if (container.ID() == response.ContainerID) {
-							container.AlgorithmPackingResults(response.AlgorithmPackingResults);
+						if (container.ID() == containerPackingResult.ContainerID) {
+							container.AlgorithmPackingResults(containerPackingResult.AlgorithmPackingResults);
 						}
 					});
 				});
-		});
+			});
 	};
 	
 	self.ShowPackingView = function (algorithmPackingResult) {

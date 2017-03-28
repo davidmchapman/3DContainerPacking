@@ -20,10 +20,9 @@ namespace CromulentBisgetti.DemoApp.Controllers
 		/// <param name="request">The packing request.</param>
 		/// <returns>A container packing result with lists of packed and unpacked items.</returns>
 		[HttpPost]
-		public ContainerPackingResult Post([FromBody]ContainerPackingRequest request)
+		public List<ContainerPackingResult> Post([FromBody]ContainerPackingRequest request)
 		{
-			Container container = new Container(request.ContainerID, request.ContainerLength, request.ContainerWidth, request.ContainerHeight);
-			return PackingService.Pack(container, request.ItemsToPack, request.AlgorithmTypeIDs);
+			return PackingService.Pack(request.Containers, request.ItemsToPack, request.AlgorithmTypeIDs);
 		}
 	}
 }
