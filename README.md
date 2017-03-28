@@ -42,7 +42,7 @@ This project also includes a demo web application that lets the user specify an 
 
 ## Acknowledgements and Related Projects
 
-This project would not have been possible without the support of Dr. Raymond Hill at the Air Force Institute of Technology. It also leans heavily on the original C code included in Erhan Baltacıoğlu's thesis, which was discovered and resurrected by Bill Knechtel (GitHub user wknechtel), and ported to JavaScript by GitHub user keremdemirer:
+This project would not have been possible without the support of Dr. Raymond Hill at the Air Force Institute of Technology. It also leans heavily on the original C code included in Erhan Baltacıoğlu's thesis, which was discovered and resurrected by Bill Knechtel (GitHub user wknechtel), and ported to JavaScript by GitHub user keremdemirer.
 
 https://github.com/wknechtel/3d-bin-pack/
 
