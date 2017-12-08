@@ -402,6 +402,8 @@ namespace CromulentBisgetti.ContainerPacking.Algorithms
 				if (hundredPercentPacked) break;
 
 				if ((container.Length == container.Height) && (container.Height == container.Width)) variant = 6;
+
+				layers = new List<Layer>();
 			}
 		}
 

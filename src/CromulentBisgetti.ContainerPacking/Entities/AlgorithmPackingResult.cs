@@ -58,7 +58,16 @@ namespace CromulentBisgetti.ContainerPacking.Entities
 		/// The percent of container volume packed.
 		/// </value>
 		[DataMember]
-		public int PercentContainerVolumePacked { get; set; }
+		public decimal PercentContainerVolumePacked { get; set; }
+
+		/// <summary>
+		/// Gets or sets the percent of item volume packed.
+		/// </summary>
+		/// <value>
+		/// The percent of item volume packed.
+		/// </value>
+		[DataMember]
+		public decimal PercentItemVolumePacked { get; set; }
 
 		/// <summary>
 		/// Gets or sets the list of unpacked items.

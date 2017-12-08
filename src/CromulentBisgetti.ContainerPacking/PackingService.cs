@@ -52,14 +52,11 @@ namespace CromulentBisgetti.ContainerPacking
 					algorithmResult.PackTimeInMilliseconds = stopwatch.ElapsedMilliseconds;
 
 					decimal containerVolume = container.Length * container.Width * container.Height;
-					decimal volumePacked = 0;
+					decimal itemVolumePacked = algorithmResult.PackedItems.Sum(i => i.Volume);
+					decimal itemVolumeUnpacked = algorithmResult.UnpackedItems.Sum(i => i.Volume);
 
-					algorithmResult.PackedItems.ForEach(item =>
-					{
-						volumePacked += item.Volume;
-					});
-
-					algorithmResult.PercentContainerVolumePacked = (int)Math.Ceiling(volumePacked / containerVolume * 100);
+					algorithmResult.PercentContainerVolumePacked = Math.Round(itemVolumePacked / containerVolume * 100, 2);
+					algorithmResult.PercentItemVolumePacked = Math.Round(itemVolumePacked / (itemVolumePacked + itemVolumeUnpacked) * 100, 2);
 
 					lock (sync)
 					{
