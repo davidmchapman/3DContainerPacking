@@ -22,11 +22,9 @@ namespace CromulentBisgetti.ContainerPacking.Algorithms
 		/// <returns>The bin packing result.</returns>
 		public AlgorithmPackingResult Run(Container container, List<Item> items)
 		{
-			this.container = container;
-
-			Initialize(items);
-			ExecuteIterations();
-			Report();
+			Initialize(container, items);
+			ExecuteIterations(container);
+			Report(container);
 
 			AlgorithmPackingResult result = new AlgorithmPackingResult();
 			result.AlgorithmID = (int)AlgorithmType.EB_AFIT;
@@ -58,14 +56,12 @@ namespace CromulentBisgetti.ContainerPacking.Algorithms
 
 		#region Private Variables
 
-		private Container container;
 		private List<Item> itemsToPack;
 		private List<Item> itemsPackedInOrder;
 		private List<Layer> layers;
 		private ContainerPackingResult result;
 
 		private ScrapPad scrapfirst;
-		private ScrapPad scrapmemb;
 		private ScrapPad smallestZ;
 		private ScrapPad trash;
 
@@ -75,21 +71,14 @@ namespace CromulentBisgetti.ContainerPacking.Algorithms
 		private bool packing;
 		private bool packingBest = false;
 		private bool quit = false;
-		private bool unpacked;
 
 		private int bboxi;
 		private int bestIteration;
-		private int bestPackedItemCount;
 		private int bestVariant;
 		private int boxi;
 		private int cboxi;
-		private int itelayer;
-		private int iterationsCount;
 		private int layerListLen;
-		private int layersIndex;
-		private int n;
 		private int packedItemCount;
-		private int variant;
 		private int x;
 
 		private decimal bbfx;
@@ -98,7 +87,6 @@ namespace CromulentBisgetti.ContainerPacking.Algorithms
 		private decimal bboxx;
 		private decimal bboxy;
 		private decimal bboxz;
-		private decimal bestVolume;
 		private decimal bfx;
 		private decimal bfy;
 		private decimal bfz;
@@ -113,8 +101,6 @@ namespace CromulentBisgetti.ContainerPacking.Algorithms
 		private decimal lilz;
 		private decimal packedVolume;
 		private decimal packedy;
-		private decimal percentagePackedItemsByVolume;
-		private decimal percentageContainerUsed;
 		private decimal prelayer;
 		private decimal prepackedy;
 		private decimal preremainpy;
@@ -123,12 +109,6 @@ namespace CromulentBisgetti.ContainerPacking.Algorithms
 		private decimal pz;
 		private decimal remainpy;
 		private decimal remainpz;
-		private decimal strcox;
-		private decimal strcoy;
-		private decimal strcoz;
-		private decimal strpackx;
-		private decimal strpacky;
-		private decimal strpackz;
 		private decimal itemsToPackCount;
 		private decimal totalItemVolume;
 		private decimal totalContainerVolume;
@@ -302,11 +282,15 @@ namespace CromulentBisgetti.ContainerPacking.Algorithms
 		/// <summary>
 		/// Executes the packing algorithm variants.
 		/// </summary>
-		private void ExecuteIterations()
+		private void ExecuteIterations(Container container)
 		{
-			for (variant = 1; (variant <= 6) && !quit; variant++)
+			int itelayer;
+			int layersIndex;
+			decimal bestVolume = 0.0M;
+
+			for (int containerOrientationVariant = 1; (containerOrientationVariant <= 6) && !quit; containerOrientationVariant++)
 			{
-				switch (variant)
+				switch (containerOrientationVariant)
 				{
 					case 1:
 						px = container.Length; py = container.Height; pz = container.Width;
@@ -339,9 +323,6 @@ namespace CromulentBisgetti.ContainerPacking.Algorithms
 
 				for (layersIndex = 1; (layersIndex <= layerListLen) && !quit; layersIndex++)
 				{
-					++iterationsCount;
-
-					//printf("VARIANT: " + variant + "; ITERATION (TOTAL): " + itenum + "; BEST SO FAR: " + percentageused + " %%;");
 					packedVolume = 0.0M;
 					packedy = 0;
 					packing = true;
@@ -389,19 +370,16 @@ namespace CromulentBisgetti.ContainerPacking.Algorithms
 					if ((packedVolume > bestVolume) && !quit)
 					{
 						bestVolume = packedVolume;
-						bestVariant = variant;
+						bestVariant = containerOrientationVariant;
 						bestIteration = itelayer;
-						bestPackedItemCount = packedItemCount;
 					}
 
 					if (hundredPercentPacked) break;
-
-					percentageContainerUsed = bestVolume * 100 / totalContainerVolume;
 				}
 
 				if (hundredPercentPacked) break;
 
-				if ((container.Length == container.Height) && (container.Height == container.Width)) variant = 6;
+				if ((container.Length == container.Height) && (container.Height == container.Width)) containerOrientationVariant = 6;
 
 				layers = new List<Layer>();
 			}
@@ -530,7 +508,7 @@ namespace CromulentBisgetti.ContainerPacking.Algorithms
 		/// </summary>
 		private void FindSmallestZ()
 		{
-			scrapmemb = scrapfirst;
+			ScrapPad scrapmemb = scrapfirst;
 			smallestZ = scrapmemb;
 
 			while (scrapmemb.Post != null)
@@ -545,43 +523,9 @@ namespace CromulentBisgetti.ContainerPacking.Algorithms
 		}
 
 		/// <summary>
-		/// Data for the visualization program is written to the "visudat" file and
-		/// the list of unpacked boxes is merged to the end of the report file.
-		/// </summary>
-		private void GraphUnpackedOut()
-		{
-			int n = 0;
-
-			if (!unpacked)
-			{
-				strcox = itemsToPack[cboxi].CoordX;
-				strcoy = itemsToPack[cboxi].CoordY;
-				strcoz = itemsToPack[cboxi].CoordZ;
-				strpackx = itemsToPack[cboxi].PackDimX;
-				strpacky = itemsToPack[cboxi].PackDimY;
-				strpackz = itemsToPack[cboxi].PackDimZ;
-			}
-			else
-			{
-				n = cboxi;
-				strpackx = itemsToPack[cboxi].Dim1;
-				strpacky = itemsToPack[cboxi].Dim2;
-				strpackz = itemsToPack[cboxi].Dim3;
-			}
-			if (!unpacked)
-			{
-				//Print(strcox, strcoy, strcoz, strpackx, strpacky, strpackz);
-			}
-			else
-			{
-				Print(n, strpackx, strpacky, strpackz);
-			}
-		}
-
-		/// <summary>
 		/// Initializes everything.
 		/// </summary>
-		private void Initialize(List<Item> items)
+		private void Initialize(Container container, List<Item> items)
 		{
 			itemsToPack = new List<Item>();
 			itemsPackedInOrder = new List<Item>();
@@ -619,10 +563,8 @@ namespace CromulentBisgetti.ContainerPacking.Algorithms
 
 			scrapfirst.Pre = null;
 			scrapfirst.Post = null;
-			bestVolume = 0.0M;
 			packingBest = false;
 			hundredPercentPacked = false;
-			iterationsCount = 0;
 			quit = false;
 		}
 
@@ -718,103 +660,78 @@ namespace CromulentBisgetti.ContainerPacking.Algorithms
 		/// </summary>
 		private void OutputBoxList()
 		{
-			int strx;
-			bool strpackst;
-			decimal strdim1;
-			decimal strdim2;
-			decimal strdim3;
-			dynamic strcox;
-			dynamic strcoy;
-			dynamic strcoz;
-			dynamic strpackx;
-			dynamic strpacky;
-			dynamic strpackz;
-
-			dynamic x = 0;
-			dynamic y = 0;
-			dynamic z = 0;
-			dynamic bx = 0;
-			dynamic by = 0;
-			dynamic bz = 0;
+			decimal packCoordX = 0;
+			decimal packCoordY = 0;
+			decimal packCoordZ = 0;
+			dynamic packDimX = 0;
+			dynamic packDimY = 0;
+			dynamic packDimZ = 0;
 
 			switch (bestVariant)
 			{
 				case 1:
-					x = itemsToPack[cboxi].CoordX;
-					y = itemsToPack[cboxi].CoordY;
-					z = itemsToPack[cboxi].CoordZ;
-					bx = itemsToPack[cboxi].PackDimX;
-					by = itemsToPack[cboxi].PackDimY;
-					bz = itemsToPack[cboxi].PackDimZ;
+					packCoordX = itemsToPack[cboxi].CoordX;
+					packCoordY = itemsToPack[cboxi].CoordY;
+					packCoordZ = itemsToPack[cboxi].CoordZ;
+					packDimX = itemsToPack[cboxi].PackDimX;
+					packDimY = itemsToPack[cboxi].PackDimY;
+					packDimZ = itemsToPack[cboxi].PackDimZ;
 					break;
 
 				case 2:
-					x = itemsToPack[cboxi].CoordZ;
-					y = itemsToPack[cboxi].CoordY;
-					z = itemsToPack[cboxi].CoordX;
-					bx = itemsToPack[cboxi].PackDimZ;
-					by = itemsToPack[cboxi].PackDimY;
-					bz = itemsToPack[cboxi].PackDimX;
+					packCoordX = itemsToPack[cboxi].CoordZ;
+					packCoordY = itemsToPack[cboxi].CoordY;
+					packCoordZ = itemsToPack[cboxi].CoordX;
+					packDimX = itemsToPack[cboxi].PackDimZ;
+					packDimY = itemsToPack[cboxi].PackDimY;
+					packDimZ = itemsToPack[cboxi].PackDimX;
 					break;
 
 				case 3:
-					x = itemsToPack[cboxi].CoordY;
-					y = itemsToPack[cboxi].CoordZ;
-					z = itemsToPack[cboxi].CoordX;
-					bx = itemsToPack[cboxi].PackDimY;
-					by = itemsToPack[cboxi].PackDimZ;
-					bz = itemsToPack[cboxi].PackDimX;
+					packCoordX = itemsToPack[cboxi].CoordY;
+					packCoordY = itemsToPack[cboxi].CoordZ;
+					packCoordZ = itemsToPack[cboxi].CoordX;
+					packDimX = itemsToPack[cboxi].PackDimY;
+					packDimY = itemsToPack[cboxi].PackDimZ;
+					packDimZ = itemsToPack[cboxi].PackDimX;
 					break;
 
 				case 4:
-					x = itemsToPack[cboxi].CoordY;
-					y = itemsToPack[cboxi].CoordX;
-					z = itemsToPack[cboxi].CoordZ;
-					bx = itemsToPack[cboxi].PackDimY;
-					by = itemsToPack[cboxi].PackDimX;
-					bz = itemsToPack[cboxi].PackDimZ;
+					packCoordX = itemsToPack[cboxi].CoordY;
+					packCoordY = itemsToPack[cboxi].CoordX;
+					packCoordZ = itemsToPack[cboxi].CoordZ;
+					packDimX = itemsToPack[cboxi].PackDimY;
+					packDimY = itemsToPack[cboxi].PackDimX;
+					packDimZ = itemsToPack[cboxi].PackDimZ;
 					break;
 
 				case 5:
-					x = itemsToPack[cboxi].CoordX;
-					y = itemsToPack[cboxi].CoordZ;
-					z = itemsToPack[cboxi].CoordY;
-					bx = itemsToPack[cboxi].PackDimX;
-					by = itemsToPack[cboxi].PackDimZ;
-					bz = itemsToPack[cboxi].PackDimY;
+					packCoordX = itemsToPack[cboxi].CoordX;
+					packCoordY = itemsToPack[cboxi].CoordZ;
+					packCoordZ = itemsToPack[cboxi].CoordY;
+					packDimX = itemsToPack[cboxi].PackDimX;
+					packDimY = itemsToPack[cboxi].PackDimZ;
+					packDimZ = itemsToPack[cboxi].PackDimY;
 					break;
 
 				case 6:
-					x = itemsToPack[cboxi].CoordZ;
-					y = itemsToPack[cboxi].CoordX;
-					z = itemsToPack[cboxi].CoordY;
-					bx = itemsToPack[cboxi].PackDimZ;
-					by = itemsToPack[cboxi].PackDimX;
-					bz = itemsToPack[cboxi].PackDimY;
+					packCoordX = itemsToPack[cboxi].CoordZ;
+					packCoordY = itemsToPack[cboxi].CoordX;
+					packCoordZ = itemsToPack[cboxi].CoordY;
+					packDimX = itemsToPack[cboxi].PackDimZ;
+					packDimY = itemsToPack[cboxi].PackDimX;
+					packDimZ = itemsToPack[cboxi].PackDimY;
 					break;
 			}
 
-			strx = cboxi;
-			strpackst = itemsToPack[cboxi].IsPacked;
-			strdim1 = itemsToPack[cboxi].Dim1;
-			strdim2 = itemsToPack[cboxi].Dim2;
-			strdim3 = itemsToPack[cboxi].Dim3;
-			strcox = x;
-			strcoy = y;
-			strcoz = z;
-			strpackx = bx;
-			strpacky = by;
-			strpackz = bz;
-
-			itemsToPack[cboxi].CoordX = x;
-			itemsToPack[cboxi].CoordY = y;
-			itemsToPack[cboxi].CoordZ = z;
-			itemsToPack[cboxi].PackDimX = bx;
-			itemsToPack[cboxi].PackDimY = by;
-			itemsToPack[cboxi].PackDimZ = bz;
+			itemsToPack[cboxi].CoordX = packCoordX;
+			itemsToPack[cboxi].CoordY = packCoordY;
+			itemsToPack[cboxi].CoordZ = packCoordZ;
+			itemsToPack[cboxi].PackDimX = packDimX;
+			itemsToPack[cboxi].PackDimY = packDimY;
+			itemsToPack[cboxi].PackDimZ = packDimZ;
 
 			itemsPackedInOrder.Add(itemsToPack[cboxi]);
-			Print(strx, strpackst, strdim1, strdim2, strdim3, strcox, strcoy, strcoz, strpackx, strpacky, strpackz);
 		}
 
 		/// <summary>
@@ -869,8 +786,6 @@ namespace CromulentBisgetti.ContainerPacking.Algorithms
 						smallestZ.CumX = cboxx;
 						smallestZ.CumZ = smallestZ.CumZ + cboxz;
 					}
-
-					VolumeCheck();
 				}
 				else if (smallestZ.Pre == null)
 				{
@@ -928,8 +843,6 @@ namespace CromulentBisgetti.ContainerPacking.Algorithms
 							smallestZ.Post.CumZ = smallestZ.CumZ + cboxz;
 						}
 					}
-
-					VolumeCheck();
 				}
 				else if (smallestZ.Post == null)
 				{
@@ -977,8 +890,6 @@ namespace CromulentBisgetti.ContainerPacking.Algorithms
 							smallestZ.Pre.CumZ = smallestZ.CumZ + cboxz;
 						}
 					}
-
-					VolumeCheck();
 				}
 				else if (smallestZ.Pre.CumZ == smallestZ.Post.CumZ)
 				{
@@ -1061,8 +972,6 @@ namespace CromulentBisgetti.ContainerPacking.Algorithms
 							smallestZ.CumX = smallestZ.CumX - cboxx;
 						}
 					}
-
-					VolumeCheck();
 				}
 				else
 				{
@@ -1116,32 +1025,17 @@ namespace CromulentBisgetti.ContainerPacking.Algorithms
 							smallestZ.Pre.CumZ = smallestZ.CumZ + cboxz;
 						}
 					}
-
-					VolumeCheck();
 				}
+
+				VolumeCheck();
 			}
-		}
-
-		/// <summary>
-		/// Prints the specified list of things to the console.
-		/// </summary>
-		private void Print(params dynamic[] list)
-		{
-			string output = string.Empty;
-
-			for (int i = 0; i < list.Length; i++)
-			{
-				output += list[i] + " ";
-			}
-
-			Console.WriteLine(output);
 		}
 
 		/// <summary>
 		/// Using the parameters found, packs the best solution found and
 		/// reports to the console.
 		/// </summary>
-		private void Report()
+		private void Report(Container container)
 		{
 			quit = false;
 
@@ -1174,22 +1068,10 @@ namespace CromulentBisgetti.ContainerPacking.Algorithms
 
 			packingBest = true;
 
-			percentagePackedItemsByVolume = bestVolume * 100 / totalItemVolume;
-			percentageContainerUsed = bestVolume * 100 / totalContainerVolume;
-
-			Print("TOTAL NUMBER OF ITERATIONS DONE                       :", iterationsCount);
-			Print("BEST SOLUTION FOUND AT ITERATION                      :", bestIteration, "OF VARIANT", bestVariant);
-			Print("TOTAL ITEMS TO PACK                                   :", itemsToPackCount);
-			Print("PACKED ITEM COUNT                                     :", bestPackedItemCount);
-			Print("TOTAL VOLUME OF ALL ITEMS                             :", totalItemVolume);
-			Print("CONTAINER VOLUME                                      :", totalContainerVolume);
-			Print("BEST SOLUTION'S VOLUME UTILIZATION                    :", bestVolume, "OUT OF", totalContainerVolume);
-			Print("PERCENTAGE OF CONTAINER VOLUME USED                   :", percentageContainerUsed);
-			Print("PERCENTAGE OF PACKED ITEMS (VOLUME)                   :", percentagePackedItemsByVolume);
-			Print("WHILE CONTAINER ORIENTATION X - Y - Z                 :", px, py, pz);
-			Print("---------------------------------------------------------------------------------------------");
-			Print("  NO: PACKSTA DIMEN-1  DMEN-2  DIMEN-3   COOR-X   COOR-Y   COOR-Z   PACKEDX  PACKEDY  PACKEDZ");
-			Print("---------------------------------------------------------------------------------------------");
+			//Print("BEST SOLUTION FOUND AT ITERATION                      :", bestIteration, "OF VARIANT", bestVariant);
+			//Print("TOTAL ITEMS TO PACK                                   :", itemsToPackCount);
+			//Print("TOTAL VOLUME OF ALL ITEMS                             :", totalItemVolume);
+			//Print("WHILE CONTAINER ORIENTATION X - Y - Z                 :", px, py, pz);
 
 			layers.Clear();
 			layers.Add(new Layer { LayerEval = -1 });
@@ -1235,42 +1117,6 @@ namespace CromulentBisgetti.ContainerPacking.Algorithms
 					FindLayer(remainpy);
 				}
 			} while (packing && !quit);
-
-			Console.WriteLine();
-			Console.WriteLine();
-			Print("*** LIST OF UNPACKED BOXES ***");
-			unpacked = true;
-
-			for (cboxi = 1; cboxi <= itemsToPackCount; cboxi++)
-			{
-				if (!itemsToPack[cboxi].IsPacked)
-				{
-					GraphUnpackedOut();
-				}
-			}
-
-			unpacked = false;
-
-			Console.WriteLine();
-
-			for (n = 1; n <= itemsToPackCount; n++)
-			{
-				if (itemsToPack[n].IsPacked)
-				{
-					Print(n, itemsToPack[n].Dim1, itemsToPack[n].Dim2, itemsToPack[n].Dim3, itemsToPack[n].CoordX, itemsToPack[n].CoordY, itemsToPack[n].CoordZ, itemsToPack[n].PackDimX, itemsToPack[n].PackDimY, itemsToPack[n].PackDimZ);
-				}
-			}
-
-			Print("TOTAL NUMBER OF ITERATIONS DONE    : ", iterationsCount);
-			Print("BEST SOLUTION FOUND AT             : ITERATION: " + bestIteration + " OF VARIANT: ", bestVariant);
-			Print("TOTAL NUMBER OF BOXES              : ", itemsToPackCount);
-			Print("PACKED NUMBER OF BOXES             : ", bestPackedItemCount);
-			Print("TOTAL VOLUME OF ALL BOXES          : ", totalItemVolume);
-			Print("PALLET VOLUME                      : ", totalContainerVolume);
-			Print("BEST SOLUTION'S VOLUME UTILIZATION : " + bestVolume + " OUT OF ", bestVolume, totalContainerVolume);
-			Print("PERCENTAGE OF PALLET VOLUME USED   : ", percentageContainerUsed);
-			Print("PERCENTAGE OF PACKEDBOXES (VOLUME) : ", percentagePackedItemsByVolume);
-			Print("WHILE PALLET ORIENTATION           : X = " + px + "; Y = " + py + "; Z = " + pz);
 		}
 
 		/// <summary>
@@ -1287,7 +1133,6 @@ namespace CromulentBisgetti.ContainerPacking.Algorithms
 
 			if (packingBest)
 			{
-				GraphUnpackedOut();
 				OutputBoxList();
 			}
 			else if (packedVolume == totalContainerVolume || packedVolume == totalItemVolume)

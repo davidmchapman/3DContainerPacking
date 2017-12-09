@@ -23,7 +23,10 @@ namespace CromulentBisgetti.ContainerPackingTests
 			{
 				using (StreamReader reader = new StreamReader(stream))
 				{
-					while (reader.ReadLine() != null)
+					// Counter to control how many tests are run in dev.
+					int counter = 1;
+
+					while (reader.ReadLine() != null && counter <= 700)
 					{
 						List<Item> itemsToPack = new List<Item>();
 
@@ -65,6 +68,8 @@ namespace CromulentBisgetti.ContainerPackingTests
 
 						// Assert that the packed item volume percentage is equal to the published reference result.
 						Assert.AreEqual(result[0].AlgorithmPackingResults[0].PercentItemVolumePacked, Convert.ToDecimal(testResults[4]));
+
+						counter++;
 					}
 				}
 			}
