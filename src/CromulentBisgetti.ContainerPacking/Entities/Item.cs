@@ -1,16 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.Serialization;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Runtime.Serialization;
 
 namespace CromulentBisgetti.ContainerPacking.Entities
 {
-	/// <summary>
-	/// An item to be packed. Also used to hold post-packing details for the item.
-	/// </summary>
-	[DataContract]
+    /// <summary>
+    /// An item to be packed. Also used to hold post-packing details for the item.
+    /// </summary>
+    [DataContract]
 	public class Item
 	{
 		#region Private Variables

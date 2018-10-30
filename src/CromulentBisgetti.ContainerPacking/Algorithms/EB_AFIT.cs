@@ -663,9 +663,9 @@ namespace CromulentBisgetti.ContainerPacking.Algorithms
 			decimal packCoordX = 0;
 			decimal packCoordY = 0;
 			decimal packCoordZ = 0;
-			dynamic packDimX = 0;
-			dynamic packDimY = 0;
-			dynamic packDimZ = 0;
+            decimal packDimX = 0;
+            decimal packDimY = 0;
+            decimal packDimZ = 0;
 
 			switch (bestVariant)
 			{

@@ -4,15 +4,14 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace CromulentBisgetti.ContainerPacking
 {
-	/// <summary>
-	/// The container packing service.
-	/// </summary>
-	public static class PackingService
+    /// <summary>
+    /// The container packing service.
+    /// </summary>
+    public static class PackingService
 	{
 		/// <summary>
 		/// Attempts to pack the specified containers with the specified items using the specified algorithms.
@@ -33,7 +32,7 @@ namespace CromulentBisgetti.ContainerPacking
 
 				Parallel.ForEach(algorithmTypeIDs, algorithmTypeID =>
 				{
-					IPackingAlgorithm algorithm = PackingService.GetPackingAlgorithmFromTypeID(algorithmTypeID);
+					IPackingAlgorithm algorithm = GetPackingAlgorithmFromTypeID(algorithmTypeID);
 
 					// Until I rewrite the algorithm with no side effects, we need to clone the item list
 					// so the parallel updates don't interfere with each other.
