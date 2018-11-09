@@ -9,8 +9,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CromulentBisgetti.Container
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CromulentBisgetti.DemoApp", "CromulentBisgetti.DemoApp\CromulentBisgetti.DemoApp.csproj", "{EB1D3F02-BC70-41B6-A9E0-DD00B3266419}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CromulentBisgetti.Demo", "CromulentBisgetti.Demo\CromulentBisgetti.Demo.csproj", "{816D892B-F8C3-47BF-9EF5-6D8C41DA9423}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -29,10 +27,6 @@ Global
 		{EB1D3F02-BC70-41B6-A9E0-DD00B3266419}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EB1D3F02-BC70-41B6-A9E0-DD00B3266419}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EB1D3F02-BC70-41B6-A9E0-DD00B3266419}.Release|Any CPU.Build.0 = Release|Any CPU
-		{816D892B-F8C3-47BF-9EF5-6D8C41DA9423}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{816D892B-F8C3-47BF-9EF5-6D8C41DA9423}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{816D892B-F8C3-47BF-9EF5-6D8C41DA9423}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{816D892B-F8C3-47BF-9EF5-6D8C41DA9423}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
