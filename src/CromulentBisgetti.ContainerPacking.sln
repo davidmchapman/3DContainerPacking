@@ -1,13 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.31101.0
+# Visual Studio 15
+VisualStudioVersion = 15.0.27703.2042
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CromulentBisgetti.ContainerPacking", "CromulentBisgetti.ContainerPacking\CromulentBisgetti.ContainerPacking.csproj", "{705D8BDE-AF87-480D-A289-650F8EC6620E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CromulentBisgetti.ContainerPacking", "CromulentBisgetti.ContainerPacking\CromulentBisgetti.ContainerPacking.csproj", "{49D6AD56-1545-4864-AC6E-80A8922742DF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CromulentBisgetti.DemoApp", "CromulentBisgetti.DemoApp\CromulentBisgetti.DemoApp.csproj", "{307B8313-8A67-421E-8EE5-0D26FFCF638E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CromulentBisgetti.ContainerPackingTests", "CromulentBisgetti.ContainerPackingTests\CromulentBisgetti.ContainerPackingTests.csproj", "{6D1B78A9-06D7-4461-A1C0-C3C09DA54317}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CromulentBisgetti.ContainerPackingTests", "CromulentBisgetti.ContainerPackingTests\CromulentBisgetti.ContainerPackingTests.csproj", "{7649F972-B331-4758-9108-D95548775C09}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CromulentBisgetti.DemoApp", "CromulentBisgetti.DemoApp\CromulentBisgetti.DemoApp.csproj", "{EB1D3F02-BC70-41B6-A9E0-DD00B3266419}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,20 +15,23 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{705D8BDE-AF87-480D-A289-650F8EC6620E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{705D8BDE-AF87-480D-A289-650F8EC6620E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{705D8BDE-AF87-480D-A289-650F8EC6620E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{705D8BDE-AF87-480D-A289-650F8EC6620E}.Release|Any CPU.Build.0 = Release|Any CPU
-		{307B8313-8A67-421E-8EE5-0D26FFCF638E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{307B8313-8A67-421E-8EE5-0D26FFCF638E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{307B8313-8A67-421E-8EE5-0D26FFCF638E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{307B8313-8A67-421E-8EE5-0D26FFCF638E}.Release|Any CPU.Build.0 = Release|Any CPU
-		{7649F972-B331-4758-9108-D95548775C09}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{7649F972-B331-4758-9108-D95548775C09}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{7649F972-B331-4758-9108-D95548775C09}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{7649F972-B331-4758-9108-D95548775C09}.Release|Any CPU.Build.0 = Release|Any CPU
+		{49D6AD56-1545-4864-AC6E-80A8922742DF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{49D6AD56-1545-4864-AC6E-80A8922742DF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{49D6AD56-1545-4864-AC6E-80A8922742DF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{49D6AD56-1545-4864-AC6E-80A8922742DF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6D1B78A9-06D7-4461-A1C0-C3C09DA54317}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6D1B78A9-06D7-4461-A1C0-C3C09DA54317}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6D1B78A9-06D7-4461-A1C0-C3C09DA54317}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6D1B78A9-06D7-4461-A1C0-C3C09DA54317}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EB1D3F02-BC70-41B6-A9E0-DD00B3266419}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EB1D3F02-BC70-41B6-A9E0-DD00B3266419}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EB1D3F02-BC70-41B6-A9E0-DD00B3266419}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EB1D3F02-BC70-41B6-A9E0-DD00B3266419}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {EFD0501E-3C48-42A7-830E-9FFA9FD9F985}
 	EndGlobalSection
 EndGlobal

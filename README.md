@@ -36,6 +36,9 @@ Internally, the Pack() method will try to pack all the containers with all the i
 
 ## Demo WebAPI Application
 
+[Live demo](https://containerpacking.moniapp.a2hosted.com/)
+Demo hosted by user @EdgarSalazar, and not maintained nor endorsed by this project's owner.
+
 This project also includes a demo web application that lets the user specify an arbitrary set of items, an arbitrary set of containers, and the packing algorithms to use. AJAX packing requests are sent to the server and handled by a WebAPI controller. Once returned, each pack solution can be viewed in the WebGL visualization tool by clicking the camera icon. 
 
 ![Container packing visualization](https://github.com/davidmchapman/3DContainerPacking/blob/master/images/packing-1.gif?raw=true "Container Packing")
