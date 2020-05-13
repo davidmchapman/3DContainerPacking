@@ -1,0 +1,13 @@
+<Project>
+  <PropertyGroup>
+    <Copyright>Copyright davidmchapman 2019</Copyright>
+    <Authors>davidmchapman</Authors>
+    <Product>3DContainerPacking</Product>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <AssemblyVersion>1.0.0.0</AssemblyVersion>
+    <FileVersion>1.0.0.0</FileVersion>
+	<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <NoWarn>$(NoWarn),1573,1591,1712</NoWarn>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+  </PropertyGroup>
+</Project>
