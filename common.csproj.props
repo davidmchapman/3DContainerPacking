@@ -4,6 +4,10 @@
     <Authors>davidmchapman</Authors>
     <Product>3DContainerPacking</Product>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageDescription>3D Container Packing</PackageDescription>
+    <RepositoryUrl>https://github.com/davidmchapman/3DContainerPacking</RepositoryUrl>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     <AssemblyVersion>1.0.0.0</AssemblyVersion>
     <FileVersion>1.0.0.0</FileVersion>
     <CodeAnalysisRuleSet>$(RepositoryRootDir)ContainerPacking.ruleset</CodeAnalysisRuleSet>
