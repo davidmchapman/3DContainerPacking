@@ -1,4 +1,5 @@
 ## 3D Container Packing in C#
+[![NuGet](https://img.shields.io/nuget/v/CromulentBisgetti.ContainerPacking.svg)](https://www.nuget.org/packages/CromulentBisgetti.ContainerPacking)
 
 This is a C# library that can be used to find 3D container packing solutions (also known as 3D bin packing). It includes an implementation of the EB-AFIT packing algorithm originally developed as a master's thesis project by Erhan Baltacıoğlu (EB) at the U.S. Air Force Institute of Technology (AFIT) in 2001. This algorithm is also described in The Distributor's Three-Dimensional Pallet-Packing Problem: A Human Intelligence-Based Heuristic Approach, by Erhan Baltacıoğlu, James T. Moore, and Raymond R. Hill Jr., published in the International Journal of Operational Research in 2006 (volume 1, issue 3).
 
