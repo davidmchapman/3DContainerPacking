@@ -1,0 +1,9 @@
+<Project>
+  <PropertyGroup>
+	<!--
+		Using solution dir is a bad practice and for example it breaks when building a csproj instead of a solution or if a solution is not in the root directory
+		Defining the root path in Directory.Build.props seems to be the prefered way to handle this, see https://github.com/Microsoft/msbuild/issues/2743#issuecomment-350391255
+	-->
+    <RepositoryRootDir>$(MSBuildThisFileDirectory)</RepositoryRootDir>
+  </PropertyGroup>
+</Project>
