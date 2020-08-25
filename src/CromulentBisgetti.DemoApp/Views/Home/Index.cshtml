@@ -1,4 +1,4 @@
-﻿@{ 
+﻿@{
     Layout = null;
 }
 
@@ -99,7 +99,10 @@
                 <div class="panel panel-default">
                     <div class="panel-heading">
                         <h3 class="panel-title pull-left">Items to Pack</h3>
-                        <div class="pull-right"><button class="btn btn-default btn-sm" data-bind="click: GenerateItemsToPack">Generate</button></div>
+                        <div class="pull-right">
+                            <button class="btn btn-default btn-sm" data-toggle="tooltip" data-placement="top" title="Generate random items" data-bind="click: RandomizeItemsToPack">Randomize</button>
+                            <button class="btn btn-default btn-sm" data-toggle="tooltip" data-placement="top" title="Generate static items" data-bind="click: GenerateItemsToPack">Generate</button>
+                        </div>
                         <div class="clearfix"></div>
                     </div>
                     <div class="panel-body">
@@ -150,7 +153,8 @@
                     <div class="panel-heading">
                         <h3 class="panel-title pull-left">Containers</h3>
                         <div class="pull-right">
-                            <button class="btn btn-default btn-sm" data-bind="click: GenerateContainers">Generate</button>
+                            <button class="btn btn-default btn-sm" data-toggle="tooltip" data-placement="top" title="Generate random containers" data-bind="click: RandomizeContainers">Randomize</button>
+                            <button class="btn btn-default btn-sm" data-toggle="tooltip" data-placement="top" title="Generate static containers" data-bind="click: GenerateContainers">Generate</button>
                             <button class="btn btn-primary btn-sm" data-bind="click: PackContainers">Pack Em Up</button>
                         </div>
                         <div class="clearfix"></div>
@@ -251,6 +255,23 @@
                 <div class="text-center">
                     <button class="btn btn-default" data-bind="click: UnpackItemInRender, enable: AreItemsPacked()"><span class="glyphicon glyphicon-chevron-left"></span></button>
                     <button class="btn btn-default" data-bind="click: PackItemInRender, disable: AreAllItemsPacked()"><span class="glyphicon glyphicon-chevron-right"></span></button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- User messages -->
+    <div class="modal fade" id="messageModal" tabindex="-1" role="dialog" aria-labelledby="modalTitle" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 class="modal-title" id="modalTitle"><span class="glyphicon glyphicon-warning-sign"></span>&nbsp;Warning</h3>
+                </div>
+                <div id="messageContent" class="modal-body">
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                 </div>
             </div>
         </div>
