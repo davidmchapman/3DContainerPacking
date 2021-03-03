@@ -18,7 +18,7 @@ function InitializeDrawing() {
 	var container = $('#drawing-container');
 
 	scene = new THREE.Scene();
-	camera = new THREE.PerspectiveCamera( 50, window.innerWidth/window.innerHeight, 0.1, 1000 );
+	camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 1000);
 	camera.lookAt(scene.position);
 
 	//var axisHelper = new THREE.AxisHelper( 5 );
@@ -26,20 +26,20 @@ function InitializeDrawing() {
 
 	// LIGHT
 	var light = new THREE.PointLight(0xffffff);
-	light.position.set(0,150,100);
+	light.position.set(0, 150, 100);
 	scene.add(light);
 
 	// Get the item stuff ready.
-	itemMaterial = new THREE.MeshNormalMaterial( { transparent: true, opacity: 0.6 } );
+	itemMaterial = new THREE.MeshNormalMaterial({ transparent: true, opacity: 0.6 });
 
-	renderer = new THREE.WebGLRenderer( { antialias: true } ); // WebGLRenderer CanvasRenderer
-	renderer.setClearColor( 0xf0f0f0 );
-	renderer.setPixelRatio( window.devicePixelRatio );
-	renderer.setSize( window.innerWidth / 2, window.innerHeight / 2);
-	container.append( renderer.domElement );
+	renderer = new THREE.WebGLRenderer({ antialias: true }); // WebGLRenderer CanvasRenderer
+	renderer.setClearColor(0xf0f0f0);
+	renderer.setPixelRatio(window.devicePixelRatio);
+	renderer.setSize(window.innerWidth / 2, window.innerHeight / 2);
+	container.append(renderer.domElement);
 
-	controls = new THREE.OrbitControls( camera, renderer.domElement );
-	window.addEventListener( 'resize', onWindowResize, false );
+	controls = new THREE.OrbitControls(camera, renderer.domElement);
+	window.addEventListener('resize', onWindowResize, false);
 
 	animate();
 };
@@ -47,16 +47,16 @@ function InitializeDrawing() {
 function onWindowResize() {
 	camera.aspect = window.innerWidth / window.innerHeight;
 	camera.updateProjectionMatrix();
-	renderer.setSize( window.innerWidth / 2, window.innerHeight / 2 );
+	renderer.setSize(window.innerWidth / 2, window.innerHeight / 2);
 }
 //
 function animate() {
-	requestAnimationFrame( animate );
+	requestAnimationFrame(animate);
 	controls.update();
 	render();
 }
 function render() {
-	renderer.render( scene, camera );
+	renderer.render(scene, camera);
 }
 
 var ViewModel = function () {
@@ -90,7 +90,7 @@ var ViewModel = function () {
 		self.ItemsToPack.push(ko.mapping.fromJS({ ID: 1004, Name: 'Item5', Length: 17, Width: 8, Height: 6, Quantity: 1 }));
 		self.ItemsToPack.push(ko.mapping.fromJS({ ID: 1005, Name: 'Item6', Length: 3, Width: 3, Height: 2, Quantity: 2 }));
 	};
-	
+
 	self.GenerateContainers = function () {
 		self.Containers([]);
 		self.Containers.push(ko.mapping.fromJS({ ID: 1000, Name: 'Box1', Length: 15, Width: 13, Height: 9, AlgorithmPackingResults: [] }));
@@ -106,6 +106,49 @@ var ViewModel = function () {
 		self.Containers.push(ko.mapping.fromJS({ ID: 1010, Name: 'Box11', Length: 17, Width: 16, Height: 15, AlgorithmPackingResults: [] }));
 		self.Containers.push(ko.mapping.fromJS({ ID: 1011, Name: 'Box12', Length: 32, Width: 10, Height: 9, AlgorithmPackingResults: [] }));
 		self.Containers.push(ko.mapping.fromJS({ ID: 1012, Name: 'Box13', Length: 60, Width: 60, Height: 60, AlgorithmPackingResults: [] }));
+	};
+
+	self.RandomizeItemsToPack = function () {
+		self.ItemsToPack([]);
+
+		var itemCount = getRandomInt(1002, 1012)
+
+		for (var x = 1000; x < itemCount; x++) {
+			var length = getRandomInt(1, 14);
+			var height = getRandomInt(1, 10);
+			var width = getRandomInt(1, 10);
+			var quantity = getRandomInt(1, 10);
+			var name = "({0}) {1}'L X {2}'W X {3}'H Boxes".format(quantity, length, width, height);
+			self.ItemsToPack.push(ko.mapping.fromJS({ ID: x, Name: name, Length: length, Width: width, Height: height, Quantity: quantity }));
+		}
+	};
+
+	self.RandomizeContainers = function () {
+		self.Containers([]);
+		var containerCount = getRandomInt(1002, 1020)
+
+		for (var x = 1000; x < containerCount; x++) {
+			var length = getRandomInt(10, 53);
+			var height = getRandomInt(7, 11);
+			var width = getRandomInt(7, 11);
+			var quantity = getRandomInt(1, 10);
+			var name = "One {0}'L X {1}'W X {2}'H Container".format(length, width, height);
+			self.Containers.push(ko.mapping.fromJS({ ID: x, Name: name, Length: length, Width: width, Height: height, AlgorithmPackingResults: [] }));
+		}
+	};
+
+	function getRandomInt(min, max) {
+		return Math.floor(Math.random() * (max - min)) + min;
+	}
+
+	String.prototype.format = function () {
+		var args = arguments;
+		return this.replace(/{(\d+)}/g, function (match, number) {
+			return typeof args[number] != 'undefined'
+				? args[number]
+				: match
+				;
+		});
 	};
 
 	self.AddAlgorithmToUse = function () {
@@ -151,7 +194,7 @@ var ViewModel = function () {
 		self.AlgorithmsToUse().forEach(algorithm => {
 			algorithmsToUse.push(algorithm.AlgorithmID);
 		});
-		
+
 		var itemsToPack = [];
 
 		self.ItemsToPack().forEach(item => {
@@ -162,10 +205,10 @@ var ViewModel = function () {
 				Dim3: item.Height(),
 				Quantity: item.Quantity()
 			};
-			
+
 			itemsToPack.push(itemToPack);
 		});
-		
+
 		var containers = [];
 
 		// Send a packing request for each container in the list.
@@ -179,14 +222,33 @@ var ViewModel = function () {
 
 			containers.push(containerToUse);
 		});
-		
+
+		// Some validation before packing.
+		if (algorithmsToUse.length == 0) {
+			$("#messageContent").text("Please select an algorithm to use for packing.");
+			$('#messageModal').modal('show');
+			return;
+		}
+
+		if (itemsToPack.length == 0) {
+			$("#messageContent").text("Please add one or more items to pack.");
+			$('#messageModal').modal('show');
+			return;
+		}
+
+		if (containers.length == 0) {
+			$("#messageContent").text("Please add one or more containers to pack items into.");
+			$('#messageModal').modal('show');
+			return;
+		}
+
 		// Build container packing request.
 		var request = {
 			Containers: containers,
 			ItemsToPack: itemsToPack,
 			AlgorithmTypeIDs: algorithmsToUse
 		};
-		
+
 		PackContainers(JSON.stringify(request))
 			.then(response => {
 				// Tie this response back to the correct containers.
@@ -199,17 +261,17 @@ var ViewModel = function () {
 				});
 			});
 	};
-	
+
 	self.ShowPackingView = function (algorithmPackingResult) {
 		var container = this;
 		var selectedObject = scene.getObjectByName('container');
-		scene.remove( selectedObject );
-		
+		scene.remove(selectedObject);
+
 		for (var i = 0; i < 1000; i++) {
 			var selectedObject = scene.getObjectByName('cube' + i);
 			scene.remove(selectedObject);
 		}
-		
+
 		camera.position.set(container.Length(), container.Length(), container.Length());
 
 		self.ItemsToRender(algorithmPackingResult.PackedItems);
@@ -220,12 +282,12 @@ var ViewModel = function () {
 		self.ContainerOriginOffset.z = -1 * container.Width() / 2;
 
 		var geometry = new THREE.BoxGeometry(container.Length(), container.Height(), container.Width());
-		var geo = new THREE.EdgesGeometry( geometry ); // or WireframeGeometry( geometry )
-		var mat = new THREE.LineBasicMaterial( { color: 0x000000, linewidth: 2 } );
-		var wireframe = new THREE.LineSegments( geo, mat );
+		var geo = new THREE.EdgesGeometry(geometry); // or WireframeGeometry( geometry )
+		var mat = new THREE.LineBasicMaterial({ color: 0x000000, linewidth: 2 });
+		var wireframe = new THREE.LineSegments(geo, mat);
 		wireframe.position.set(0, 0, 0);
 		wireframe.name = 'container';
-		scene.add( wireframe );
+		scene.add(wireframe);
 	};
 
 	self.AreItemsPacked = function () {
@@ -257,14 +319,14 @@ var ViewModel = function () {
 		var cube = new THREE.Mesh(itemGeometry, itemMaterial);
 		cube.position.set(self.ContainerOriginOffset.x + itemOriginOffset.x + self.ItemsToRender()[itemIndex].CoordX, self.ContainerOriginOffset.y + itemOriginOffset.y + self.ItemsToRender()[itemIndex].CoordY, self.ContainerOriginOffset.z + itemOriginOffset.z + self.ItemsToRender()[itemIndex].CoordZ);
 		cube.name = 'cube' + itemIndex;
-		scene.add( cube );
+		scene.add(cube);
 
 		self.LastItemRenderedIndex(itemIndex);
 	};
 
 	self.UnpackItemInRender = function () {
 		var selectedObject = scene.getObjectByName('cube' + self.LastItemRenderedIndex());
-		scene.remove( selectedObject );
+		scene.remove(selectedObject);
 		self.LastItemRenderedIndex(self.LastItemRenderedIndex() - 1);
 	};
 };
@@ -275,7 +337,7 @@ var ItemToPack = function () {
 	this.Length = '';
 	this.Width = '';
 	this.Height = '',
-	this.Quantity = '';
+		this.Quantity = '';
 }
 
 var Container = function () {
@@ -288,7 +350,7 @@ var Container = function () {
 }
 
 $(document).ready(() => {
-	$('[data-toggle="tooltip"]').tooltip(); 
+	$('[data-toggle="tooltip"]').tooltip();
 	InitializeDrawing();
 
 	viewModel = new ViewModel();
