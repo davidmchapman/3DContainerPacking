@@ -6,6 +6,8 @@ using System.Collections.Generic;
 using CromulentBisgetti.ContainerPacking;
 using CromulentBisgetti.ContainerPacking.Entities;
 using CromulentBisgetti.ContainerPacking.Algorithms;
+using System.Globalization;
+using System.Diagnostics;
 
 namespace CromulentBisgetti.ContainerPackingTests
 {
@@ -18,6 +20,8 @@ namespace CromulentBisgetti.ContainerPackingTests
 			// ORLibrary.txt is an Embedded Resource in this project.
 			string resourceName = "CromulentBisgetti.ContainerPackingTests.DataFiles.ORLibrary.txt";
 			Assembly assembly = Assembly.GetExecutingAssembly();
+
+			var decimalPointCulture = CultureInfo.GetCultureInfo("en-us");
 
 			using (Stream stream = assembly.GetManifestResourceStream(resourceName))
 			{
@@ -53,7 +57,9 @@ namespace CromulentBisgetti.ContainerPackingTests
 						containers.Add(new Container(0, Convert.ToDecimal(containerDims[0]), Convert.ToDecimal(containerDims[1]), Convert.ToDecimal(containerDims[2])));
 
 						List<ContainerPackingResult> result = PackingService.Pack(containers, itemsToPack, new List<int> { (int)AlgorithmType.EB_AFIT });
-						
+
+						Debug.WriteLine($"Test #{counter} took {result[0].AlgorithmPackingResults[0].PackTimeInMilliseconds}msec");
+				
 						// Assert that the number of items we tried to pack equals the number stated in the published reference.
 						Assert.AreEqual(result[0].AlgorithmPackingResults[0].PackedItems.Count + result[0].AlgorithmPackingResults[0].UnpackedItems.Count, Convert.ToDecimal(testResults[1]));
 
@@ -61,13 +67,15 @@ namespace CromulentBisgetti.ContainerPackingTests
 						Assert.AreEqual(result[0].AlgorithmPackingResults[0].PackedItems.Count, Convert.ToDecimal(testResults[2]));
 
 						// Assert that the packed container volume percentage is equal to the published reference result.
-						// Make an exception for a couple of tests where this algorithm yields 87.20% and the published result 
-						// was 87.21% (acceptable rounding error).
-						Assert.IsTrue(result[0].AlgorithmPackingResults[0].PercentContainerVolumePacked == Convert.ToDecimal(testResults[3]) ||
-							(result[0].AlgorithmPackingResults[0].PercentContainerVolumePacked == 87.20M && Convert.ToDecimal(testResults[3]) == 87.21M));
+						var actualPercentage = result[0].AlgorithmPackingResults[0].PercentContainerVolumePacked;
+						var expectedPrecentage = Convert.ToDecimal(testResults[3], decimalPointCulture);
+
+						Assert.IsTrue(
+							Math.Abs(actualPercentage - expectedPrecentage) < 0.02M,
+							$"Test #{counter} failed: expected%={expectedPrecentage}; actual%={actualPercentage};");
 
 						// Assert that the packed item volume percentage is equal to the published reference result.
-						Assert.AreEqual(result[0].AlgorithmPackingResults[0].PercentItemVolumePacked, Convert.ToDecimal(testResults[4]));
+						Assert.AreEqual(result[0].AlgorithmPackingResults[0].PercentItemVolumePacked, Convert.ToDecimal(testResults[4], decimalPointCulture));
 
 						counter++;
 					}

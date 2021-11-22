@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 
 namespace CromulentBisgetti.ContainerPacking.Algorithms
 {
@@ -20,9 +21,9 @@ namespace CromulentBisgetti.ContainerPacking.Algorithms
 		/// <param name="container">The container to pack items into.</param>
 		/// <param name="items">The items to pack.</param>
 		/// <returns>The bin packing result.</returns>
-		public AlgorithmPackingResult Run(Container container, List<Item> items)
+		public AlgorithmPackingResult Run(Container container, List<Item> items, CancellationToken cancellationToken)
 		{
-			Initialize(container, items);
+			Initialize(container, items, cancellationToken);
 			ExecuteIterations(container);
 			Report(container);
 
@@ -41,8 +42,6 @@ namespace CromulentBisgetti.ContainerPacking.Algorithms
 			}
 
 			result.PackedItems = itemsPackedInOrder;
-			
-
 
 			if (result.UnpackedItems.Count == 0)
 			{
@@ -52,13 +51,14 @@ namespace CromulentBisgetti.ContainerPacking.Algorithms
 			return result;
 		}
 
-		#endregion Public Methods
+        #endregion Public Methods
 
-		#region Private Variables
+        #region Private Variables
 
-		private List<Item> itemsToPack;
+        private List<Item> itemsToPack;
 		private List<Item> itemsPackedInOrder;
 		private List<Layer> layers;
+		private CancellationToken algorithmCancellationToken;
 		private ContainerPackingResult result;
 
 		private ScrapPad scrapfirst;
@@ -70,7 +70,6 @@ namespace CromulentBisgetti.ContainerPacking.Algorithms
 		private bool layerDone;
 		private bool packing;
 		private bool packingBest = false;
-		private bool quit = false;
 
 		private int bboxi;
 		private int bestIteration;
@@ -288,7 +287,7 @@ namespace CromulentBisgetti.ContainerPacking.Algorithms
 			int layersIndex;
 			decimal bestVolume = 0.0M;
 
-			for (int containerOrientationVariant = 1; (containerOrientationVariant <= 6) && !quit; containerOrientationVariant++)
+			for (int containerOrientationVariant = 1; (containerOrientationVariant <= 6) && !algorithmCancellationToken.IsCancellationRequested; containerOrientationVariant++)
 			{
 				switch (containerOrientationVariant)
 				{
@@ -321,7 +320,7 @@ namespace CromulentBisgetti.ContainerPacking.Algorithms
 				ListCanditLayers();
 				layers = layers.OrderBy(l => l.LayerEval).ToList();
 
-				for (layersIndex = 1; (layersIndex <= layerListLen) && !quit; layersIndex++)
+				for (layersIndex = 1; (layersIndex <= layerListLen) && !algorithmCancellationToken.IsCancellationRequested; layersIndex++)
 				{
 					packedVolume = 0.0M;
 					packedy = 0;
@@ -347,7 +346,7 @@ namespace CromulentBisgetti.ContainerPacking.Algorithms
 						packedy = packedy + layerThickness;
 						remainpy = py - packedy;
 
-						if (layerinlayer != 0 && !quit)
+						if (layerinlayer != 0 && !algorithmCancellationToken.IsCancellationRequested)
 						{
 							prepackedy = packedy;
 							preremainpy = remainpy;
@@ -365,9 +364,9 @@ namespace CromulentBisgetti.ContainerPacking.Algorithms
 						}
 
 						FindLayer(remainpy);
-					} while (packing && !quit);
+					} while (packing && !algorithmCancellationToken.IsCancellationRequested);
 
-					if ((packedVolume > bestVolume) && !quit)
+					if ((packedVolume > bestVolume) && !algorithmCancellationToken.IsCancellationRequested)
 					{
 						bestVolume = packedVolume;
 						bestVariant = containerOrientationVariant;
@@ -525,10 +524,12 @@ namespace CromulentBisgetti.ContainerPacking.Algorithms
 		/// <summary>
 		/// Initializes everything.
 		/// </summary>
-		private void Initialize(Container container, List<Item> items)
+		private void Initialize(Container container, List<Item> items, CancellationToken cancellationToken)
 		{
 			itemsToPack = new List<Item>();
 			itemsPackedInOrder = new List<Item>();
+			algorithmCancellationToken = cancellationToken;
+
 			result = new ContainerPackingResult();
 
 			// The original code uses 1-based indexing everywhere. This fake entry is added to the beginning
@@ -565,13 +566,12 @@ namespace CromulentBisgetti.ContainerPacking.Algorithms
 			scrapfirst.Post = null;
 			packingBest = false;
 			hundredPercentPacked = false;
-			quit = false;
 		}
 
-		/// <summary>
-		/// Lists all possible layer heights by giving a weight value to each of them.
-		/// </summary>
-		private void ListCanditLayers()
+        /// <summary>
+        /// Lists all possible layer heights by giving a weight value to each of them.
+        /// </summary>
+        private void ListCanditLayers()
 		{
 			bool same;
 			decimal exdim = 0;
@@ -752,7 +752,7 @@ namespace CromulentBisgetti.ContainerPacking.Algorithms
 			scrapfirst.CumX = px;
 			scrapfirst.CumZ = 0;
 
-			for (; !quit;)
+			for (; !algorithmCancellationToken.IsCancellationRequested;)
 			{
 				FindSmallestZ();
 
@@ -1037,8 +1037,6 @@ namespace CromulentBisgetti.ContainerPacking.Algorithms
 		/// </summary>
 		private void Report(Container container)
 		{
-			quit = false;
-
 			switch (bestVariant)
 			{
 				case 1:
@@ -1112,11 +1110,11 @@ namespace CromulentBisgetti.ContainerPacking.Algorithms
 					remainpz = pz;
 				}
 
-				if (!quit)
+				if (!algorithmCancellationToken.IsCancellationRequested)
 				{
 					FindLayer(remainpy);
 				}
-			} while (packing && !quit);
+			} while (packing && !algorithmCancellationToken.IsCancellationRequested);
 		}
 
 		/// <summary>
