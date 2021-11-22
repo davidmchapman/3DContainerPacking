@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace CromulentBisgetti.ContainerPacking
@@ -21,6 +22,13 @@ namespace CromulentBisgetti.ContainerPacking
 		/// <param name="algorithmTypeIDs">The list of algorithm type IDs to use for packing.</param>
 		/// <returns>A container packing result with lists of the packed and unpacked items.</returns>
 		public static List<ContainerPackingResult> Pack(List<Container> containers, List<Item> itemsToPack, List<int> algorithmTypeIDs)
+        {
+			var source = new CancellationTokenSource();
+		
+			return Pack(containers, itemsToPack, algorithmTypeIDs, source.Token);
+        }
+
+		public static List<ContainerPackingResult> Pack(List<Container> containers, List<Item> itemsToPack, List<int> algorithmTypeIDs, CancellationToken cancellationToken)
 		{
 			Object sync = new Object { };
 			List<ContainerPackingResult> result = new List<ContainerPackingResult>();
@@ -45,7 +53,7 @@ namespace CromulentBisgetti.ContainerPacking
 
 					Stopwatch stopwatch = new Stopwatch();
 					stopwatch.Start();
-					AlgorithmPackingResult algorithmResult = algorithm.Run(container, items);
+					AlgorithmPackingResult algorithmResult = algorithm.Run(container, items, cancellationToken);
 					stopwatch.Stop();
 
 					algorithmResult.PackTimeInMilliseconds = stopwatch.ElapsedMilliseconds;
