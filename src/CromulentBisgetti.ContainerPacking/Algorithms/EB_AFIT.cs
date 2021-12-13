@@ -938,7 +938,7 @@ namespace CromulentBisgetti.ContainerPacking.Algorithms
 						if (smallestZ.CumZ + cboxz == smallestZ.Pre.CumZ)
 						{
 							smallestZ.CumX = smallestZ.CumX - cboxx;
-							itemsToPack[cboxi].CoordX = smallestZ.CumX - cboxx;
+							itemsToPack[cboxi].CoordX = smallestZ.CumX;
 						}
 						else
 						{
