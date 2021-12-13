@@ -10,7 +10,6 @@
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     <AssemblyVersion>1.0.0.0</AssemblyVersion>
     <FileVersion>1.0.0.0</FileVersion>
-    <CodeAnalysisRuleSet>$(RepositoryRootDir)ContainerPacking.ruleset</CodeAnalysisRuleSet>
 	<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <NoWarn>$(NoWarn),1573,1591,1712</NoWarn>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
