@@ -32,6 +32,6 @@ jobs:
       - name: Package nuget
         run: dotnet pack ./src/CromulentBisgetti.ContainerPacking/CromulentBisgetti.ContainerPacking.csproj --configuration release -o:package /p:PackageVersion=${{ steps.get_version.outputs.VERSION }}
       - name: Push generated package to GitHub registry
-        run: dotnet nuget push ./package/*.nupkg  --source "https://nuget.pkg.github.com/raphac/index.json"  --api-key ${{ github.token }}
+        run: dotnet nuget push ./package/*.nupkg  --source "https://nuget.pkg.github.com/raphac/index.json"  --api-key ${{ secrets.GITHUB_TOKEN }}
       - name: Push generated package to nuget registry
         run: dotnet nuget push ./package/*.nupkg  --source "https://api.nuget.org/v3/index.json"  -k ${{ secrets.NUGET_API_KEY }
