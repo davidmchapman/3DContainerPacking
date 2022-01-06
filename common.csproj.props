@@ -4,8 +4,11 @@
     <Authors>davidmchapman</Authors>
     <Product>3DContainerPacking</Product>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <PackageDescription>3D Container Packing</PackageDescription>
-    <RepositoryUrl>https://github.com/davidmchapman/3DContainerPacking</RepositoryUrl>
+    <PackageDescription>3D Container Packing (CromulentBisgetti.ContainerPacking)</PackageDescription>
+    <RepositoryUrl>https://github.com/raphac/3DContainerPacking.git</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
     <IncludeSymbols>true</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     <AssemblyVersion>1.0.0.0</AssemblyVersion>
@@ -14,4 +17,11 @@
     <NoWarn>$(NoWarn),1573,1591,1712</NoWarn>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(GITHUB_ACTIONS)' == 'true'">
+    <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="All"/>
+  </ItemGroup>
 </Project>

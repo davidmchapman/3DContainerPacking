@@ -2,6 +2,7 @@
   <Import Project="$(RepositoryRootDir)common.csproj.props" />
   <PropertyGroup>
     <TargetFramework>netcoreapp2.1</TargetFramework>
+    <IsPackable>false</IsPackable>
   </PropertyGroup>
 
   <ItemGroup>

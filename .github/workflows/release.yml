@@ -1,0 +1,39 @@
+name: build and test
+
+on:
+  push:
+    # Pattern matched against refs/tags
+    tags:
+      - '**'
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: 5.0.x
+      steps:
+        - name: Checkout
+          uses: actions/checkout@v2
+          with:
+            fetch-depth: 0
+        - name: Get the version
+          id: get_version
+          run: echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\//}
+        - name: Restore dependencies
+          run: dotnet restore
+        - name: Build
+          run: dotnet build --configuration Release --no-restore
+        - name: Test
+          run: dotnet test --no-build --verbosity normal
+        - name: Package nuget
+          run: dotnet pack ./src/CromulentBisgetti.ContainerPacking/CromulentBisgetti.ContainerPacking.csproj --configuration release -o:package /p:PackageVersion=${{ steps.get_version.outputs.VERSION }}
+        - name: Push generated package to GitHub registry
+          run: dotnet nuget push ./package/*.nupkg  --source "https://nuget.pkg.github.com/raphac/index.json"  --api-key ${{ github.token }}
+        - name: Push generated package to nuget registry
+          run: dotnet nuget push ./package/*.nupkg  --source "https://api.nuget.org/v3/index.json"  -k ${{ secrets.NUGET_API_KEY }

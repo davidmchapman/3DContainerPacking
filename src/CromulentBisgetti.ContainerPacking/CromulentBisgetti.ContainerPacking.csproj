@@ -2,5 +2,6 @@
   <Import Project="$(RepositoryRootDir)common.csproj.props" />
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <PackageId>3DContainerPacking</PackageId>
   </PropertyGroup>
 </Project>
