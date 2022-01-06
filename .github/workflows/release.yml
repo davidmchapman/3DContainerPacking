@@ -23,14 +23,14 @@ jobs:
       - name: Get the version
         id: get_version
         run: echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\//}
+      - name: Get tag version
+        run: echo "The tag version is ${{ steps.get_version.outputs.VERSION }}"
       - name: Restore dependencies
         run: dotnet restore
       - name: Build
         run: dotnet build --configuration Release --no-restore
       - name: Test
         run: dotnet test --no-build --verbosity normal
-      - name: Get tag version
-        run: echo "The tag version is ${{ steps.get_version.outputs.VERSION }}"
 #      - name: Package nuget
 #        run: dotnet pack ./src/CromulentBisgetti.ContainerPacking/CromulentBisgetti.ContainerPacking.csproj --configuration release -o:package /p:PackageVersion=${{ steps.get_version.outputs.VERSION }}
 #      - name: Push generated package to GitHub registry
