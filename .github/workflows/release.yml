@@ -23,17 +23,15 @@ jobs:
       - name: Get the version
         id: get_version
         run: echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\//}
-      - name: Get tag version
-        run: echo "The tag version is ${{ steps.get_version.outputs.VERSION }}"
       - name: Restore dependencies
         run: dotnet restore
       - name: Build
         run: dotnet build --configuration Release --no-restore
       - name: Test
-        run: dotnet test --no-build --verbosity normal
-#      - name: Package nuget
-#        run: dotnet pack ./src/CromulentBisgetti.ContainerPacking/CromulentBisgetti.ContainerPacking.csproj --configuration release -o:package /p:PackageVersion=${{ steps.get_version.outputs.VERSION }}
-#      - name: Push generated package to GitHub registry
-#        run: dotnet nuget push ./package/*.nupkg  --source "https://nuget.pkg.github.com/raphac/index.json"  --api-key ${{ github.token }}
-#      - name: Push generated package to nuget registry
-#        run: dotnet nuget push ./package/*.nupkg  --source "https://api.nuget.org/v3/index.json"  -k ${{ secrets.NUGET_API_KEY }
+        run: dotnet test --configuration Release --no-build --verbosity normal
+      - name: Package nuget
+        run: dotnet pack ./src/CromulentBisgetti.ContainerPacking/CromulentBisgetti.ContainerPacking.csproj --configuration release -o:package /p:PackageVersion=${{ steps.get_version.outputs.VERSION }}
+      - name: Push generated package to GitHub registry
+        run: dotnet nuget push ./package/*.nupkg  --source "https://nuget.pkg.github.com/raphac/index.json"  --api-key ${{ github.token }}
+      - name: Push generated package to nuget registry
+        run: dotnet nuget push ./package/*.nupkg  --source "https://api.nuget.org/v3/index.json"  -k ${{ secrets.NUGET_API_KEY }
