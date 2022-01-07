@@ -4,8 +4,10 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <PackageId>3DContainerPacking</PackageId>
     <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
   </PropertyGroup>
   <ItemGroup>
     <None Include="../../README.md" Pack="true" PackagePath=""/>
+    <None Include="../../LICENSE.md" Pack="true" PackagePath="LICENSE.md"/>
   </ItemGroup>
 </Project>

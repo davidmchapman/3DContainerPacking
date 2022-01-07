@@ -3,7 +3,6 @@
     <Copyright>Copyright davidmchapman 2019</Copyright>
     <Authors>davidmchapman</Authors>
     <Product>3DContainerPacking</Product>
-    <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageDescription>3D Container Packing (CromulentBisgetti.ContainerPacking)</PackageDescription>
     <RepositoryUrl>https://github.com/raphac/3DContainerPacking.git</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
