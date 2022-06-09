@@ -403,7 +403,7 @@ namespace CromulentBisgetti.ContainerPacking.Algorithms
 
 			for (y = 1; y <= itemsToPackCount; y = y + itemsToPack[y].Quantity)
 			{
-				for (x = y; x < x + itemsToPack[y].Quantity - 1; x++)
+				for (x = y; x < y + itemsToPack[y].Quantity - 1; x++)
 				{
 					if (!itemsToPack[x].IsPacked) break;
 				}
@@ -548,8 +548,6 @@ namespace CromulentBisgetti.ContainerPacking.Algorithms
 
 				itemsToPackCount += item.Quantity;
 			}
-
-			itemsToPack.Add(new Item(0, 0, 0, 0, 0));
 
 			totalContainerVolume = container.Length * container.Height * container.Width;
 			totalItemVolume = 0.0M;
