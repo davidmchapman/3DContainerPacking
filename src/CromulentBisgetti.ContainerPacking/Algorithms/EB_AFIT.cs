@@ -619,7 +619,7 @@ namespace CromulentBisgetti.ContainerPacking.Algorithms
 						if (exdim == layers[k].LayerDim)
 						{
 							same = true;
-							continue;
+							break;
 						}
 					}
 
