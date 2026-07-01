@@ -82,7 +82,7 @@ namespace CromulentBisgetti.ContainerPackingTests
 						foreach (var packedItem in result[0].AlgorithmPackingResults[0].PackedItems)
 						{
 							Assert.AreEqual(7, packedItem.Weight);
-							Assert.AreEqual(7, packedItem.TotalCost);
+							Assert.AreEqual(7, packedItem.UnitCost);
 							Assert.AreEqual(0, packedItem.MaterialBuffer);
 						}
 

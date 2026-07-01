@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Version>1.0.10</Version>
+    <Version>1.0.9</Version>
     <LangVersion>latestmajor</LangVersion>
   </PropertyGroup>
 

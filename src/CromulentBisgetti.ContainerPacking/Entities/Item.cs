@@ -29,7 +29,7 @@ namespace CromulentBisgetti.ContainerPacking.Entities
 		/// <param name="dim3">The length of the other of the three item dimensions.</param>
 		/// <param name="quantity">The quantity of the item.</param>
 		/// <param name="weight">The weight of the item (not used in calculations).</param>
-		/// <param name="totalCost">The total cost of the item (incl all quantities, discounts, etc.) (not used in calculations).</param>
+		/// <param name="unitCost">The unit cost of the item (not used in calculations).</param>
 		/// <param name="materialBuffer">The amount of buffer to apply to each dimension for packing materials.</param>
 		/// <param name="alreadyPadded">If dimensions are already padded, and so should not be automatically padded.</param>
 		public Item(
@@ -39,7 +39,7 @@ namespace CromulentBisgetti.ContainerPacking.Entities
 			decimal dim3, 
 			int quantity,
 			decimal weight,
-			decimal totalCost,
+			decimal unitCost,
 			decimal materialBuffer,
 			bool alreadyPadded = false
 		)
@@ -52,7 +52,7 @@ namespace CromulentBisgetti.ContainerPacking.Entities
 			this.Quantity = quantity;
 
 			Weight = weight;
-			TotalCost = totalCost;
+			UnitCost = unitCost;
 			MaterialBuffer = materialBuffer;
 			IsPadded = alreadyPadded;
 
@@ -68,7 +68,7 @@ namespace CromulentBisgetti.ContainerPacking.Entities
 		
 		public decimal Weight { get; set; }
 		
-		public decimal TotalCost { get; set; }
+		public decimal UnitCost { get; set; }
 		
 		public decimal MaterialBuffer { get; set; }
 		
