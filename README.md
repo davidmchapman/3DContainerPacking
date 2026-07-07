@@ -35,6 +35,25 @@ The list of ContainerPackingResults contains a ContainerPackingResult object for
 
 Internally, the Pack() method will try to pack all the containers with all the items using all the requested algorithms in parallel. If you have a list of containers you want to try, but want them to run serially, then you can call Pack() with one container at a time. For example, if you want to run a large set of containers but would like to update the user interface as each one finishes, then you would want to call Pack() multiple times asynchronously and update the UI as each result returns.
 
+## CI and Release Process
+
+GitHub Actions runs the CI build for pull requests into `master` and for pushes to `master`. The CI job restores the solution, builds it in `Release` configuration, and runs the test project.
+
+NuGet packages are released from branches named `release/<version>`, where `<version>` is the package version to publish. For example:
+
+    release/10.0.9
+    release/10.0.10
+    release/10.0.11
+
+When a `release/*` branch is pushed, the release pipeline:
+
+1. Validates that the branch name contains a semantic version.
+2. Restores, builds, and tests the solution.
+3. Builds a NuGet package for `CromulentBisgetti.ContainerPacking`.
+4. Publishes the package to GitHub Packages.
+
+The package version is taken from the branch name, so `release/10.0.11` produces `CromulentBisgetti.ContainerPacking.10.0.11.nupkg`. The workflow uses the repository `GITHUB_TOKEN` with package write permissions, so no separate NuGet API key is required for GitHub Packages.
+
 ## Demo WebAPI Application
 
 This project also includes a demo web application that lets the user specify an arbitrary set of items, an arbitrary set of containers, and the packing algorithms to use. AJAX packing requests are sent to the server and handled by a WebAPI controller. Once returned, each pack solution can be viewed in the WebGL visualization tool by clicking the camera icon. 

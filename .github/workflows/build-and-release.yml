@@ -1,0 +1,102 @@
+name: Build and Release
+
+on:
+  pull_request:
+    branches:
+      - master
+  push:
+    branches:
+      - master
+      - 'release/**'
+  workflow_dispatch:
+
+env:
+  DOTNET_VERSION: '8.0.x'
+  SOLUTION_PATH: src/CromulentBisgetti.ContainerPacking.sln
+  PACKAGE_PROJECT: src/CromulentBisgetti.ContainerPacking/CromulentBisgetti.ContainerPacking.csproj
+  PACKAGE_OUTPUT: artifacts/packages
+
+jobs:
+  ci:
+    name: CI Build
+    if: github.event_name == 'pull_request' || github.ref == 'refs/heads/master'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+
+      - name: Restore
+        run: dotnet restore "${{ env.SOLUTION_PATH }}"
+
+      - name: Build
+        run: dotnet build "${{ env.SOLUTION_PATH }}" --configuration Release --no-restore /p:GeneratePackageOnBuild=false
+
+      - name: Test
+        run: dotnet test "${{ env.SOLUTION_PATH }}" --configuration Release --no-build --verbosity normal
+
+  release:
+    name: Release Package
+    if: startsWith(github.ref, 'refs/heads/release/')
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+
+      - name: Get release version
+        id: version
+        shell: bash
+        run: |
+          version="${GITHUB_REF_NAME#release/}"
+
+          if [[ ! "$version" =~ ^[0-9]+\.[0-9]+\.[0-9]+(-[0-9A-Za-z.-]+)?$ ]]; then
+            echo "Release branches must be named release/<semver>, for example release/10.0.11." >&2
+            exit 1
+          fi
+
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+
+      - name: Restore
+        run: dotnet restore "${{ env.SOLUTION_PATH }}"
+
+      - name: Build
+        run: dotnet build "${{ env.SOLUTION_PATH }}" --configuration Release --no-restore /p:GeneratePackageOnBuild=false
+
+      - name: Test
+        run: dotnet test "${{ env.SOLUTION_PATH }}" --configuration Release --no-build --verbosity normal
+
+      - name: Pack
+        run: >
+          dotnet pack "${{ env.PACKAGE_PROJECT }}"
+          --configuration Release
+          --no-build
+          --output "${{ env.PACKAGE_OUTPUT }}"
+          /p:PackageVersion=${{ steps.version.outputs.version }}
+          /p:Version=${{ steps.version.outputs.version }}
+          /p:ContinuousIntegrationBuild=true
+          /p:GeneratePackageOnBuild=false
+
+      - name: Publish to GitHub Packages
+        run: >
+          dotnet nuget push "${{ env.PACKAGE_OUTPUT }}/*.nupkg"
+          --source "https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json"
+          --api-key "${{ secrets.GITHUB_TOKEN }}"
+          --skip-duplicate
