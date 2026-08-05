@@ -48,3 +48,7 @@ This project would not have been possible without the support of Dr. Raymond Hil
 https://github.com/wknechtel/3d-bin-pack/
 
 https://github.com/keremdemirer/3dbinpackingjs
+
+This library has also been ported to TypeScript.
+
+https://github.com/TaherJerbi/3d-bin-packing-ts
